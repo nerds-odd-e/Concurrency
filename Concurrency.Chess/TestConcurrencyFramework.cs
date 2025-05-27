@@ -28,8 +28,8 @@ namespace Concurrency.Chess
         /// This test may work in nunit or it may fail depending on the order in which the threads execute.
         /// Under chess this test will always fail with a "deadlock" error (if the Ignore attributes are commented out).
         /// </summary>
-        [Microsoft.Concurrency.TestTools.UnitTesting.Ignore]
-        [NUnit.Framework.Ignore("May cause nunit to hang")]
+        //[Microsoft.Concurrency.TestTools.UnitTesting.Ignore]
+        //[NUnit.Framework.Ignore("May cause nunit to hang")]
         [Test]
         [ScheduleTestMethod]
         public void TestDeadLockCausedByInconsistentLockOrdering()

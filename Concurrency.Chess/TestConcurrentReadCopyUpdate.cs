@@ -69,7 +69,7 @@ namespace Concurrency.Chess
         /// Compare this with the <see cref="TestConcurrentReadAndUpdate"/> test that uses <see cref="ReadCopyUpdateList{T}"/>.
         /// Both tests perform the same operation but <see cref="ReadCopyUpdateList{T}"/> does not suffer from the "DATARACE" error.
         /// </summary>
-        [Microsoft.Concurrency.TestTools.UnitTesting.Ignore]
+        //[Microsoft.Concurrency.TestTools.UnitTesting.Ignore]
         [Test]
         [DataRaceTestMethod]
         public void TestConcurrentReadAndUpdateWithLinkedList()
