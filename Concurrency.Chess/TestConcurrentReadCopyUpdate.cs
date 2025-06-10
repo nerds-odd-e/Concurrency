@@ -99,6 +99,25 @@ namespace Concurrency.Chess
                 });
         }
 
+        [Test]
+        [DataRaceTestMethod]
+        public void TestConcurrentReadAndRemoveWithDictionary()
+        {
+            var dic = new Dictionary<int, string> { { 10, "task10" } };
+
+            Parallel.Invoke(
+                () =>
+                {
+                    Debug.WriteLine("Read dic with key 10 was: " + dic[10]);
+                },
+                () =>
+                {
+                    // Updater thread
+                    dic.Remove(10);
+                    Debug.WriteLine("Remove key 10");
+                });
+        }
+
     }
 
 }
