@@ -32,6 +32,7 @@ namespace Concurrency.Chess
         //[NUnit.Framework.Ignore("May cause nunit to hang")]
         [Test]
         [ScheduleTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Deadlock)]
         public void TestDeadLockCausedByInconsistentLockOrdering()
         {
             lock1 = new object();
