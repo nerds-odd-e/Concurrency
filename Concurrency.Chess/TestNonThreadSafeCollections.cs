@@ -58,14 +58,12 @@ namespace Concurrency.Chess
                 {
                     foreach (var v in list)
                     {
-                        Console.WriteLine("Read list with value " + v);
+                        int v1 = v;
                     }
                 });
             t.Start();
 
-            // Updater thread
             list.Remove(listNode);
-            Debug.WriteLine("Node 3 removed");
             t.Join();
         }
 
@@ -92,7 +90,7 @@ namespace Concurrency.Chess
         [RegressionTestExpectedResult(TestResultType.DataRace)]
         public void TestDataRaceConcurrentReadAndRemoveWithDictionary()
         {
-            var dic = new Dictionary<int, string> { { 1, "task1" }, { 10, "task10" }, { 20, "task20" } };
+            dic = new Dictionary<int, string> { { 1, "task1" }, { 10, "task10" }, { 20, "task20" } };
 
             Thread t = new Thread(
                 () =>
@@ -148,7 +146,7 @@ namespace Concurrency.Chess
         [RegressionTestExpectedResult(TestResultType.DataRace)]
         public void TestDataRaceConcurrentReadAndWriteDifferentKeyWithDictionary()
         {
-            var dic = new Dictionary<int, string> { { 1, "task1" }, { 10, "task10" }, { 20, "task20" } };
+            dic = new Dictionary<int, string> { { 1, "task1" }, { 10, "task10" }, { 20, "task20" } };
 
             Thread t = new Thread(
                 () =>
