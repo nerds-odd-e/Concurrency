@@ -36,14 +36,12 @@ namespace Concurrency.Chess
                     var enumerater = list.GetEnumerator();
                     while (enumerater.MoveNext())
                     {
-                        Console.WriteLine("Read list wth value " + enumerater.Current);
+                        int current = enumerater.Current;
                     }
                 });
             t.Start();
 
-            // Updater thread
             list.Remove(listNode);
-            Debug.WriteLine("Node 3 removed");
             t.Join();
         }
 
