@@ -52,6 +52,7 @@
     <Compile Include="TestConcurrencyFramework.cs" />
     <Compile Include="TestConcurrentReadCopyUpdate.cs" />
     <Compile Include="TestNonThreadSafeCollections.cs" />
+    <Compile Include="TestThreadSafeCollections.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Concurrency\Concurrency.csproj">
