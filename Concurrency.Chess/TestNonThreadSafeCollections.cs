@@ -160,5 +160,62 @@ namespace Concurrency.Chess
             t.Join();
         }
 
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentReadAndContainsKeySameKeyWithDictionary()
+        {
+            dic = new Dictionary<int, string> { { 1, "task1" }, { 10, "task10" }, { 20, "task20" } };
+
+            Thread t = new Thread(
+                () =>
+                {
+                    var task10 = dic[10];
+                });
+            t.Start();
+
+            // Updater thread
+            var result = dic.ContainsKey(10);
+            t.Join();
+        }
+
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentReadAndContainsKeyDifferentKeyWithDictionary()
+        {
+            dic = new Dictionary<int, string> { { 1, "task1" }, { 10, "task10" }, { 20, "task20" } };
+
+            Thread t = new Thread(
+                () =>
+                {
+                    var task10 = dic[10];
+                });
+            t.Start();
+
+            // Updater thread
+            var result = dic.ContainsKey(20);
+            t.Join();
+        }
+
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentReadAndContainsKeyNotExistingKeyWithDictionary()
+        {
+            dic = new Dictionary<int, string> { { 1, "task1" }, { 10, "task10" }, { 20, "task20" } };
+
+            Thread t = new Thread(
+                () =>
+                {
+                    var task10 = dic[10];
+                });
+            t.Start();
+
+            // Updater thread
+            var result = dic.ContainsKey(42);
+            t.Join();
+        }
+
     }
 }
