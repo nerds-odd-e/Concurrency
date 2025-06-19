@@ -12,7 +12,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 [assembly: ChessInstrumentAssembly("System")]
-[assembly: ChessInstrumentAssembly("mscorlib")]
+//[assembly: ChessInstrumentAssembly("mscorlib")]
 [assembly: ChessInstrumentAssembly("Concurrency")]
 
 namespace Concurrency.Chess

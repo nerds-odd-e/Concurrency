@@ -13,7 +13,7 @@ using Assert = NUnit.Framework.Assert;
 // such as LinkedList{T}
 //**********************************************************************************************
 [assembly: ChessInstrumentAssembly("System")]
-[assembly: ChessInstrumentAssembly("mscorlib")]
+//[assembly: ChessInstrumentAssembly("mscorlib")]
 [assembly: ChessInstrumentAssembly("Concurrency")]
 
 namespace Concurrency.Chess
