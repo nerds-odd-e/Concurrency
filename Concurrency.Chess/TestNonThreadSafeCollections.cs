@@ -16,7 +16,6 @@ using System.Threading.Tasks;
 namespace Concurrency.Chess
 {
     [TestFixture]
-    [ChessInstrumentAssembly("System")]
     [ChessInstrumentAssembly("mscorlib")]
     [ChessInstrumentAssembly("nunit.framework", Exclude = true)]
     public class TestNonThreadSafeCollections
