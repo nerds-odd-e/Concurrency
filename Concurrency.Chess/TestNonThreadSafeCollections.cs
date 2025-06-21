@@ -9,13 +9,16 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-[assembly: ChessInstrumentAssembly("System")]
-[assembly: ChessInstrumentAssembly("mscorlib")]
-[assembly: ChessInstrumentAssembly("Concurrency")]
+//[assembly: ChessInstrumentAssembly("System")]
+//[assembly: ChessInstrumentAssembly("mscorlib")]
+//[assembly: ChessInstrumentAssembly("Concurrency")]
 
 namespace Concurrency.Chess
 {
     [TestFixture]
+    [ChessInstrumentAssembly("System")]
+    [ChessInstrumentAssembly("mscorlib")]
+    [ChessInstrumentAssembly("nunit.framework", Exclude = true)]
     public class TestNonThreadSafeCollections
     {
         private static List<int> list;

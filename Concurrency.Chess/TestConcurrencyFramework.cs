@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Threading;
 using Microsoft.Concurrency.TestTools.UnitTesting;
+using Microsoft.Concurrency.TestTools.UnitTesting.Chess;
 using NUnit.Framework;
 
 namespace Concurrency.Chess
@@ -18,6 +19,7 @@ namespace Concurrency.Chess
     /// (Although the setup/teardown methods may be called by nunit they are ignored by chess.)
     /// </summary>
     [TestFixture]
+    [ChessInstrumentAssembly("nunit.framework", Exclude = true)]
     public class TestConcurrencyFramework
     {
         private static object lock1 = new object();

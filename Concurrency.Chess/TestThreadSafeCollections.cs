@@ -11,13 +11,15 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-[assembly: ChessInstrumentAssembly("System")]
+//[assembly: ChessInstrumentAssembly("System")]
 //[assembly: ChessInstrumentAssembly("mscorlib")]
-[assembly: ChessInstrumentAssembly("Concurrency")]
+//[assembly: ChessInstrumentAssembly("Concurrency")]
 
 namespace Concurrency.Chess
 {
     [TestFixture]
+    [ChessInstrumentAssembly("System")]
+    [ChessInstrumentAssembly("nunit.framework", Exclude = true)]
     public class TestThreadSafeCollections
     {
         private static ArrayList cList;

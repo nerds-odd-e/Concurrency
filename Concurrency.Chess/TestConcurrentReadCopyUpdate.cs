@@ -12,9 +12,9 @@ using Assert = NUnit.Framework.Assert;
 // Instruct Chess to instrument the System.dll assembly so we can catch data races in CLR classes 
 // such as LinkedList{T}
 //**********************************************************************************************
-[assembly: ChessInstrumentAssembly("System")]
+//[assembly: ChessInstrumentAssembly("System")]
 //[assembly: ChessInstrumentAssembly("mscorlib")]
-[assembly: ChessInstrumentAssembly("Concurrency")]
+//[assembly: ChessInstrumentAssembly("Concurrency")]
 
 namespace Concurrency.Chess
 {
@@ -22,6 +22,8 @@ namespace Concurrency.Chess
     /// Test the <see cref="ReadCopyUpdateList{T}"/> in a concurrent environment.
     /// </summary>
     [TestFixture]
+    [ChessInstrumentAssembly("System")]
+    [ChessInstrumentAssembly("nunit.framework", Exclude = true)]
     public class TestConcurrentReadCopyUpdate
     {
         private static LinkedList<int> llist;
