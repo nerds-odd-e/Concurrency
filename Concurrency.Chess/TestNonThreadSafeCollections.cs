@@ -219,5 +219,24 @@ namespace Concurrency.Chess
             t.Join();
         }
 
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.DataRace)]
+        [ChessInstrumentAssembly("System")]
+        public void TestDataRaceConcurrentEnqueueWithQueue()
+        {
+            var queue = new Queue<int>();
+
+            Thread t = new Thread(
+                () =>
+                {
+                    queue.Enqueue(10);
+                });
+            t.Start();
+
+            queue.Enqueue(10);
+            t.Join();
+        }
+
     }
 }
