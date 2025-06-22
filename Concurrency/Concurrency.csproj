@@ -46,6 +46,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReadCopyUpdateList.cs" />
     <Compile Include="ThreadSafeArrayList.cs" />
+    <Compile Include="ThreadSafeList.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

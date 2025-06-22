@@ -55,6 +55,7 @@
     <Compile Include="TestPropertyAccessFix.cs" />
     <Compile Include="TestThreadSafeArrayList.cs" />
     <Compile Include="TestThreadSafeCollections.cs" />
+    <Compile Include="TestThreadSafeList.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Concurrency\Concurrency.csproj">
