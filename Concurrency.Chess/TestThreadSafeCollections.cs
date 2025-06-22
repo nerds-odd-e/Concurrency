@@ -18,7 +18,7 @@ using System.Threading.Tasks;
 namespace Concurrency.Chess
 {
     [TestFixture]
-    [ChessInstrumentAssembly("System")]
+    [ChessInstrumentAssembly("mscorlib")]
     [ChessInstrumentAssembly("nunit.framework", Exclude = true)]
     public class TestThreadSafeCollections
     {
@@ -26,6 +26,30 @@ namespace Concurrency.Chess
         private static int listNode;
         private static ConcurrentDictionary<int, string> dic;
         private static ConcurrentQueue<int> cQueue;
+
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.DataRace)]
+        public void TestDataRaceConcurrentEnumerateReadAndUpdateWithoutLockWithSynchronizedArrayList()
+        {
+            cList = ArrayList.Synchronized(new ArrayList(new[] { 1, 2, 3, 4 }));
+            listNode = (int)cList[2];
+
+            Thread t = new Thread(
+                () =>
+                {
+                    var enumerater = cList.GetEnumerator();
+                    while (enumerater.MoveNext())
+                    {
+                        int current = (int)enumerater.Current;
+                    }
+                });
+            t.Start();
+
+            // Updater thread
+            cList.Remove(listNode);
+            t.Join();
+        }
 
         [Test]
         [DataRaceTestMethod]
