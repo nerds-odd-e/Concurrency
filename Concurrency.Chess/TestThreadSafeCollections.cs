@@ -46,7 +46,6 @@ namespace Concurrency.Chess
                 });
             t.Start();
 
-            // Updater thread
             cList.Remove(listNode);
             t.Join();
         }
@@ -73,7 +72,28 @@ namespace Concurrency.Chess
                 });
             t.Start();
 
-            // Updater thread
+            cList.Remove(listNode);
+            t.Join();
+        }
+
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.DataRace)]
+        public void TestDataRaceConcurrentLoopReadAndUpdateWithoutLockWithSynchronizedArrayList()
+        {
+            cList = ArrayList.Synchronized(new ArrayList(new[] { 1, 2, 3, 4 }));
+            listNode = (int)cList[2];
+
+            Thread t = new Thread(
+                () =>
+                {
+                    foreach (var v in cList)
+                    {
+                        object v1 = v;
+                    }
+                });
+            t.Start();
+
             cList.Remove(listNode);
             t.Join();
         }
