@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Concurrency
 {
-    public class ThreadSafeList<T> : IList<T>
+    public class ThreadSafeList<T> : List<T>
     {
         private List<T> _list;
         private object _root;
@@ -18,7 +18,7 @@ namespace Concurrency
             _root = ((ICollection)list).SyncRoot;
         }
 
-        public int Count
+        public new int Count
         {
             get
             {
@@ -37,7 +37,7 @@ namespace Concurrency
             }
         }
 
-        public void Add(T item)
+        public new void Add(T item)
         {
             lock (_root)
             {
@@ -45,7 +45,7 @@ namespace Concurrency
             }
         }
 
-        public void Clear()
+        public new void Clear()
         {
             lock (_root)
             {
@@ -53,7 +53,7 @@ namespace Concurrency
             }
         }
 
-        public bool Contains(T item)
+        public new bool Contains(T item)
         {
             lock (_root)
             {
@@ -61,7 +61,7 @@ namespace Concurrency
             }
         }
 
-        public void CopyTo(T[] array, int arrayIndex)
+        public new void CopyTo(T[] array, int arrayIndex)
         {
             lock (_root)
             {
@@ -69,7 +69,7 @@ namespace Concurrency
             }
         }
 
-        public bool Remove(T item)
+        public new bool Remove(T item)
         {
             lock (_root)
             {
@@ -77,7 +77,7 @@ namespace Concurrency
             }
         }
 
-        public IEnumerator<T> GetEnumerator()
+        public new IEnumerator<T> GetEnumerator()
         {
             lock (_root)
             {
@@ -86,16 +86,7 @@ namespace Concurrency
             }
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            lock (_root)
-            {
-                var copy = new List<T>(_list);
-                return ((IEnumerable<T>)copy).GetEnumerator();
-            }
-        }
-
-        public T this[int index]
+        public new T this[int index]
         {
             get
             {
@@ -113,7 +104,7 @@ namespace Concurrency
             }
         }
 
-        public int IndexOf(T item)
+        public new int IndexOf(T item)
         {
             lock (_root)
             {
@@ -121,7 +112,7 @@ namespace Concurrency
             }
         }
 
-        public void Insert(int index, T item)
+        public new void Insert(int index, T item)
         {
             lock (_root)
             {
@@ -129,11 +120,121 @@ namespace Concurrency
             }
         }
 
-        public void RemoveAt(int index)
+        public new void RemoveAt(int index)
         {
             lock (_root)
             {
                 _list.RemoveAt(index);
+            }
+        }
+
+        public new int Capacity
+        {
+            get { lock (_root) { return _list.Capacity; } }
+            set { lock (_root) { _list.Capacity = value; } }
+        }
+
+        public new void AddRange(IEnumerable<T> collection)
+        {
+            lock (_root)
+            {
+                _list.AddRange(collection);
+            }
+        }
+
+        public new void InsertRange(int index, IEnumerable<T> collection)
+        {
+            lock (_root)
+            {
+                _list.InsertRange(index, collection);
+            }
+        }
+
+        public new void RemoveRange(int index, int count)
+        {
+            lock (_root)
+            {
+                _list.RemoveRange(index, count);
+            }
+        }
+
+        public new int RemoveAll(Predicate<T> match)
+        {
+            lock (_root)
+            {
+                return _list.RemoveAll(match);
+            }
+        }
+
+        public new int IndexOf(T item, int index)
+        {
+            lock (_root)
+            {
+                return _list.IndexOf(item, index);
+            }
+        }
+
+        public new int IndexOf(T item, int index, int count)
+        {
+            lock (_root)
+            {
+                return _list.IndexOf(item, index, count);
+            }
+        }
+
+        public new int LastIndexOf(T item)
+        {
+            lock (_root)
+            {
+                return _list.LastIndexOf(item);
+            }
+        }
+
+        public new int LastIndexOf(T item, int index)
+        {
+            lock (_root)
+            {
+                return _list.LastIndexOf(item, index);
+            }
+        }
+
+        public new int LastIndexOf(T item, int index, int count)
+        {
+            lock (_root)
+            {
+                return _list.LastIndexOf(item, index, count);
+            }
+        }
+
+        public new void Reverse()
+        {
+            lock (_root)
+            {
+                _list.Reverse();
+            }
+        }
+
+        public new void Reverse(int index, int count)
+        {
+            lock (_root)
+            {
+                _list.Reverse(index, count);
+            }
+        }
+
+        public new void Sort()
+        {
+            lock (_root)
+            {
+                _list.Sort();
+            }
+        }
+
+        public new void Sort(IComparer<T> comparer)
+        {
+            lock (_root)
+            {
+                _list.Sort(comparer);
             }
         }
     }
