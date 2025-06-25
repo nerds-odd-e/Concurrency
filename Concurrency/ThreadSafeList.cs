@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -237,5 +238,212 @@ namespace Concurrency
                 _list.Sort(comparer);
             }
         }
+
+        public new void Sort(Comparison<T> comparison)
+        {
+            lock (_root)
+            {
+                _list.Sort(comparison);
+            }
+        }
+
+        public new void Sort(int index, int count, IComparer<T> comparer)
+        {
+            lock (_root)
+            {
+                _list.Sort(index, count, comparer);
+            }
+        }
+
+        public new void TrimExcess()
+        {
+            lock (_root)
+            {
+                _list.TrimExcess();
+            }
+        }
+
+        public new int BinarySearch(T item)
+        {
+            lock (_root)
+            {
+                return _list.BinarySearch(item);
+            }
+        }
+
+        public new int BinarySearch(T item, IComparer<T> comparer)
+        {
+            lock (_root)
+            {
+                return _list.BinarySearch(item, comparer);
+            }
+        }
+
+        public new int BinarySearch(int index, int count, T item, IComparer<T> comparer)
+        {
+            lock (_root)
+            {
+                return _list.BinarySearch(index, count, item, comparer);
+            }
+        }
+
+        public new T Find(Predicate<T> match)
+        {
+            lock (_root)
+            {
+                return _list.Find(match);
+            }
+        }
+
+        public new ThreadSafeList<T> FindAll(Predicate<T> match)
+        {
+            lock (_root)
+            {
+                return new ThreadSafeList<T>(_list.FindAll(match));
+            }
+        }
+
+        public new int FindIndex(Predicate<T> match)
+        {
+            lock (_root)
+            {
+                return _list.FindIndex(match);
+            }
+        }
+
+        public new int FindIndex(int startIndex, Predicate<T> match)
+        {
+            lock (_root)
+            {
+                return _list.FindIndex(startIndex, match);
+            }
+        }
+
+        public new int FindIndex(int startIndex, int count, Predicate<T> match)
+        {
+            lock (_root)
+            {
+                return _list.FindIndex(startIndex, count, match);
+            }
+        }
+
+        public new T FindLast(Predicate<T> match)
+        {
+            lock (_root)
+            {
+                return _list.FindLast(match);
+            }
+        }
+
+        public new int FindLastIndex(Predicate<T> match)
+        {
+            lock (_root)
+            {
+                return _list.FindLastIndex(match);
+            }
+        }
+
+        public new int FindLastIndex(int startIndex, Predicate<T> match)
+        {
+            lock (_root)
+            {
+                return _list.FindLastIndex(startIndex, match);
+            }
+        }
+
+        public new int FindLastIndex(int startIndex, int count, Predicate<T> match)
+        {
+            lock (_root)
+            {
+                return _list.FindLastIndex(startIndex, count, match);
+            }
+        }
+
+        public new bool Exists(Predicate<T> match)
+        {
+            lock (_root)
+            {
+                return _list.Exists(match);
+            }
+        }
+
+        public new bool TrueForAll(Predicate<T> match)
+        {
+            lock (_root)
+            {
+                return _list.TrueForAll(match);
+            }
+        }
+
+        public new void ForEach(Action<T> action)
+        {
+            List<T> snapshot;
+            lock (_root)
+            {
+                snapshot = new List<T>(_list);
+            }
+            snapshot.ForEach(action);
+        }
+
+        public new ThreadSafeList<TOutput> ConvertAll<TOutput>(Converter<T, TOutput> converter)
+        {
+            lock (_root)
+            {
+                return new ThreadSafeList<TOutput>(_list.ConvertAll(converter));
+            }
+        }
+
+        public new ReadOnlyCollection<T> AsReadOnly()
+        {
+            lock (_root)
+            {
+                return _list.AsReadOnly();
+            }
+        }
+
+        public ThreadSafeList()
+        {
+            _list = new List<T>();
+            _root = ((ICollection)_list).SyncRoot;
+        }
+
+        public ThreadSafeList(int capacity)
+        {
+            _list = new List<T>(capacity);
+            _root = ((ICollection)_list).SyncRoot;
+        }
+
+        public new void CopyTo(T[] array)
+        {
+            lock (_root)
+            {
+                _list.CopyTo(array);
+            }
+        }
+
+        public new void CopyTo(int index, T[] array, int arrayIndex, int count)
+        {
+            lock (_root)
+            {
+                _list.CopyTo(index, array, arrayIndex, count);
+            }
+        }
+
+        public new List<T> GetRange(int index, int count)
+        {
+            lock (_root)
+            {
+                return _list.GetRange(index, count);
+            }
+        }
+
+        public new T[] ToArray()
+        {
+            lock (_root)
+            {
+                return _list.ToArray();
+            }
+        }
+
     }
 }
