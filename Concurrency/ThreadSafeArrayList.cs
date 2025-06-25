@@ -343,5 +343,17 @@ namespace Concurrency
             }
         }
 
+        public ThreadSafeArrayList()
+        {
+            _list = new ArrayList();
+            _root = _list.SyncRoot;
+        }
+
+        public ThreadSafeArrayList(int capacity)
+        {
+            _list = new ArrayList(capacity);
+            _root = _list.SyncRoot;
+        }
+
     }
 }

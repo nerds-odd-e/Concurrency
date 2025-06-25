@@ -84,5 +84,41 @@ namespace Concurrency.Chess
             t.Join();
         }
 
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConstructor()
+        {
+            var cList = new ThreadSafeArrayList();
+
+            Thread t = new Thread(
+                () =>
+                {
+                    cList.Add(42);
+                });
+            t.Start();
+
+            cList.Add(77);
+            t.Join();
+        }
+
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConstructorWithCapacity()
+        {
+            var cList = new ThreadSafeArrayList(10);
+
+            Thread t = new Thread(
+                () =>
+                {
+                    cList.Add(42);
+                });
+            t.Start();
+
+            cList.Add(77);
+            t.Join();
+        }
+
     }
 }
