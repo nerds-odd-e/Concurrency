@@ -393,13 +393,13 @@ namespace Concurrency
             }
         }
 
-        public new ReadOnlyCollection<T> AsReadOnly()
-        {
-            lock (_root)
-            {
-                return _list.AsReadOnly();
-            }
-        }
+        //public new ReadOnlyCollection<T> AsReadOnly()
+        //{
+        //    lock (_root)
+        //    {
+        //        return AsReadOnly();
+        //    }
+        //}
 
         public ThreadSafeList()
         {

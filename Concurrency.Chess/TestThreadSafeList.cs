@@ -724,11 +724,15 @@ namespace Concurrency.Chess
             Thread t = new Thread(
                 () =>
                 {
-                    cList.Add(42);
+                    cList.Remove(4);
                 });
             t.Start();
 
             var result = cList.AsReadOnly();
+            foreach (var e in result)
+            {
+                var e1 = e;
+            }
             t.Join();
         }
 
