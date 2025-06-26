@@ -222,6 +222,7 @@ namespace Concurrency.Chess
         [Test]
         [DataRaceTestMethod]
         [RegressionTestExpectedResult(TestResultType.DataRace)]
+        [ChessInstrumentAssembly("mscorlib", Exclude = true)]
         [ChessInstrumentAssembly("System")]
         public void TestDataRaceConcurrentEnqueueWithQueue()
         {
@@ -235,6 +236,26 @@ namespace Concurrency.Chess
             t.Start();
 
             queue.Enqueue(10);
+            t.Join();
+        }
+
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.DataRace)]
+        [ChessInstrumentAssembly("mscorlib", Exclude = true)]
+        [ChessInstrumentAssembly("System")]
+        public void TestDataRaceConcurrentAddWithSortedList()
+        {
+            var sortedList = new SortedList<int, string>();
+
+            Thread t = new Thread(
+                () =>
+                {
+                    sortedList.Add(1, "value1");
+                });
+            t.Start();
+
+            sortedList.Add(2, "value2");
             t.Join();
         }
 

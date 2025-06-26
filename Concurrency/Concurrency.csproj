@@ -47,6 +47,7 @@
     <Compile Include="ReadCopyUpdateList.cs" />
     <Compile Include="ThreadSafeArrayList.cs" />
     <Compile Include="ThreadSafeList.cs" />
+    <Compile Include="ThreadSafeSortedList.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
