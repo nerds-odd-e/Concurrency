@@ -120,5 +120,49 @@ namespace Concurrency.Chess
             t.Join();
         }
 
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentGetByIndexAndLoopReadGetRange()
+        {
+            var cList = new ThreadSafeArrayList(new ArrayList { 1, 2, 3, 4 });
+
+            Thread t = new Thread(
+                () =>
+                {
+                    var value = cList[3];
+                });
+            t.Start();
+
+            var range = cList.GetRange(1, 2);
+            foreach (var v in range)
+            {
+                var v1 = v;
+            }
+            t.Join();
+        }
+
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Exception)]
+        public void TestErrorConcurrentAddAndLoopReadGetRange()
+        {
+            var cList = new ThreadSafeArrayList(new ArrayList { 1, 2, 3, 4 });
+
+            Thread t = new Thread(
+                () =>
+                {
+                    cList.Add(42);
+                });
+            t.Start();
+
+            var range = cList.GetRange(1, 2);
+            foreach (var v in range)
+            {
+                var v1 = v;
+            }
+            t.Join();
+        }
+
     }
 }

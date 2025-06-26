@@ -291,7 +291,11 @@ namespace Concurrency
         {
             lock (_root)
             {
-                return _list.GetRange(index, count);
+                /* 
+                    Please note that even through we can return a thread-safe array list, we can't avoid the exception that thrown by underline array list 
+                    when concurrently modify the base array list and read from the returned array list. Internally, array list has a mechanism to throw such exception
+                 */
+                return new ThreadSafeArrayList(_list.GetRange(index, count));
             }
         }
 
