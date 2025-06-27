@@ -20,7 +20,21 @@ namespace Concurrency.Chess
         [RegressionTestExpectedResult(TestResultType.Passed)]
         public void TestPassedConcurrentEnumerateReadAndUpdate()
         {
-            var cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            ThreadSafeList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            TestPassedConcurrentEnumerateReadAndUpdateAs(cList);
+        }
+
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentEnumerateReadAndUpdateCastAsIList()
+        {
+            IList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            TestPassedConcurrentEnumerateReadAndUpdateAs(cList);
+        }
+
+        private void TestPassedConcurrentEnumerateReadAndUpdateAs<T>(T cList) where T : IList<int>
+        {
             var listNode = cList[2];
 
             Thread t = new Thread(
@@ -36,6 +50,7 @@ namespace Concurrency.Chess
 
             cList.Remove(listNode);
             t.Join();
+            NUnit.Framework.Assert.AreEqual(3, cList.Count);
         }
 
         [Test]
@@ -43,7 +58,21 @@ namespace Concurrency.Chess
         [RegressionTestExpectedResult(TestResultType.Passed)]
         public void TestPassedConcurrentLoopReadAndUpdate()
         {
-            var cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            ThreadSafeList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            TestPassedConcurrentLoopReadAndUpdateAs(cList);
+        }
+
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentLoopReadAndUpdateCastAsIList()
+        {
+            IList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            TestPassedConcurrentLoopReadAndUpdateAs(cList);
+        }
+
+        private void TestPassedConcurrentLoopReadAndUpdateAs<T>(T cList) where T : IList<int>
+        {
             var listNode = cList[2];
 
             Thread t = new Thread(
@@ -58,6 +87,7 @@ namespace Concurrency.Chess
 
             cList.Remove(listNode);
             t.Join();
+            NUnit.Framework.Assert.AreEqual(3, cList.Count);
         }
 
         [Test]
@@ -65,7 +95,7 @@ namespace Concurrency.Chess
         [RegressionTestExpectedResult(TestResultType.Passed)]
         public void TestPassedConcurrentCapacityAndUpdate()
         {
-            var cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            ThreadSafeList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
             var listNode = cList[2];
 
             Thread t = new Thread(
@@ -77,6 +107,208 @@ namespace Concurrency.Chess
 
             cList.Capacity = 10;
             t.Join();
+            NUnit.Framework.Assert.AreEqual(10, cList.Capacity);
+            NUnit.Framework.Assert.AreEqual(4, cList.Count);
+        }
+
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentAddAndIsReadOnly()
+        {
+            ThreadSafeList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            TestPassedConcurrentAddAndIsReadOnlyAs(cList);
+        }
+
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentAddAndIsReadOnlyCastAsIList()
+        {
+            IList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            TestPassedConcurrentAddAndIsReadOnlyAs(cList);
+        }
+
+        private void TestPassedConcurrentAddAndIsReadOnlyAs<T>(T cList) where T : IList<int>
+        {
+            Thread t = new Thread(
+                () =>
+                {
+                    cList.Add(42);
+                });
+            t.Start();
+
+            var isReadOnly = cList.IsReadOnly;
+            t.Join();
+            NUnit.Framework.Assert.AreEqual(5, cList.Count);
+            NUnit.Framework.Assert.IsFalse(isReadOnly);
+        }
+
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentAddAndCount()
+        {
+            ThreadSafeList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            TestPassedConcurrentAddAndCountAs(cList);
+        }
+
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentAddAndCountCastAsIList()
+        {
+            IList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            TestPassedConcurrentAddAndCountAs(cList);
+        }
+
+        private void TestPassedConcurrentAddAndCountAs<T>(T cList) where T : IList<int>
+        {
+            Thread t = new Thread(
+                () =>
+                {
+                    cList.Add(42);
+                });
+            t.Start();
+
+            var count = cList.Count;
+            t.Join();
+            NUnit.Framework.Assert.IsTrue(count == 4 || count == 5);
+        }
+
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentAddAndGetByIndex()
+        {
+            ThreadSafeList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+
+            TestPassedConcurrentAddAndGetByIndexAs(cList);
+        }
+
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentAddAndGetByIndexCastAsIList()
+        {
+            IList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+
+            TestPassedConcurrentAddAndGetByIndexAs(cList);
+        }
+
+        private void TestPassedConcurrentAddAndGetByIndexAs<T>(T cList) where T : IList<int>
+        {
+            Thread t = new Thread(
+                () =>
+                {
+                    cList.Add(42);
+                });
+            t.Start();
+
+            var v = cList[1];
+            t.Join();
+            NUnit.Framework.Assert.AreEqual(5, cList.Count);
+            NUnit.Framework.Assert.AreEqual(2, v);
+        }
+
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentAddAndSetByIndex()
+        {
+            ThreadSafeList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+
+            TestPassedConcurrentAddAndSetByIndexAs(cList);
+        }
+
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentAddAndSetByIndexCastAsIList()
+        {
+            IList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+
+            TestPassedConcurrentAddAndSetByIndexAs(cList);
+        }
+
+        private void TestPassedConcurrentAddAndSetByIndexAs<T>(T cList) where T : IList<int>
+        {
+            Thread t = new Thread(
+                () =>
+                {
+                    cList.Add(42);
+                });
+            t.Start();
+
+            cList[2] = 123;
+            t.Join();
+            NUnit.Framework.Assert.AreEqual(5, cList.Count);
+            NUnit.Framework.Assert.AreEqual(123, cList[2]);
+        }
+
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentAddAndClear()
+        {
+            ThreadSafeList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            TestPassedConcurrentAddAndContainsAs(cList);
+        }
+
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentAddAndClearCastAsIList()
+        {
+            ThreadSafeList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            TestPassedConcurrentAddAndContainsAs(cList);
+        }
+
+        private void TestPassedConcurrentAddAndCleaAs<T>(T cList) where T : IList<int>
+        {
+            Thread t = new Thread(
+                () =>
+                {
+                    cList.Add(42);
+                });
+            t.Start();
+
+            cList.Clear();
+            t.Join();
+            NUnit.Framework.Assert.IsTrue(cList.Count == 0 || cList.Count == 1);
+        }
+
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentAddAndContains()
+        {
+            ThreadSafeList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            TestPassedConcurrentAddAndContainsAs(cList);
+        }
+
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentAddAndContainsCastAsIList()
+        {
+            ThreadSafeList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            TestPassedConcurrentAddAndContainsAs(cList);
+        }
+
+        private void TestPassedConcurrentAddAndContainsAs<T>(T cList) where T : IList<int>
+        {
+            Thread t = new Thread(
+                () =>
+                {
+                    cList.Add(42);
+                });
+            t.Start();
+
+            var contains = cList.Contains(2);
+            t.Join();
+            NUnit.Framework.Assert.AreEqual(5, cList.Count);
+            NUnit.Framework.Assert.IsTrue(contains);
         }
 
         [Test]
@@ -84,7 +316,7 @@ namespace Concurrency.Chess
         [RegressionTestExpectedResult(TestResultType.Passed)]
         public void TestPassedConcurrentAddRangeAndRemove()
         {
-            var cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            ThreadSafeList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
             var listNode = cList[2];
 
             Thread t = new Thread(
@@ -96,6 +328,52 @@ namespace Concurrency.Chess
 
             cList.Remove(listNode);
             t.Join();
+            NUnit.Framework.Assert.AreEqual(5, cList.Count);
+        }
+
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentInsertAndRemove()
+        {
+            ThreadSafeList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            var listNode = cList[2];
+
+            Thread t = new Thread(
+                () =>
+                {
+                    cList.Insert(2, 42);
+                });
+            t.Start();
+
+            cList.Remove(listNode);
+            t.Join();
+            NUnit.Framework.Assert.AreEqual(4, cList.Count);
+        }
+
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentInsertAndRemoveCastAsIList()
+        {
+            IList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            TestPassedConcurrentInsertAndRemoveAs(cList);
+        }
+
+        private void TestPassedConcurrentInsertAndRemoveAs<T>(T cList) where T : IList<int>
+        {
+            var listNode = cList[2];
+
+            Thread t = new Thread(
+                () =>
+                {
+                    cList.Insert(2, 42);
+                });
+            t.Start();
+
+            cList.Remove(listNode);
+            t.Join();
+            NUnit.Framework.Assert.AreEqual(4, cList.Count);
         }
 
         [Test]
@@ -103,7 +381,7 @@ namespace Concurrency.Chess
         [RegressionTestExpectedResult(TestResultType.Passed)]
         public void TestPassedConcurrentInsertRangeAndRemove()
         {
-            var cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            ThreadSafeList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
             var listNode = cList[2];
 
             Thread t = new Thread(
@@ -115,6 +393,73 @@ namespace Concurrency.Chess
 
             cList.Remove(listNode);
             t.Join();
+            NUnit.Framework.Assert.AreEqual(5, cList.Count);
+        }
+
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentAddAndRemove()
+        {
+            ThreadSafeList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            TestPassedConcurrentAddAndRemoveAs(cList);
+        }
+
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentAddAndRemoveCastAsIList()
+        {
+            IList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            TestPassedConcurrentAddAndRemoveAs(cList);
+        }
+
+        private void TestPassedConcurrentAddAndRemoveAs<T>(T cList) where T : IList<int>
+        {
+            Thread t = new Thread(
+                () =>
+                {
+                    cList.Remove(3);
+                });
+            t.Start();
+
+            cList.Add(42);
+            t.Join();
+            NUnit.Framework.Assert.AreEqual(4, cList.Count);
+        }
+
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentAddAndRemoveAt()
+        {
+            ThreadSafeList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            TestPassedConcurrentAddAndRemoveAtAs(cList);
+        }
+
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentAddAndRemoveAtCastAsIList()
+        {
+            IList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            TestPassedConcurrentAddAndRemoveAtAs(cList);
+        }
+
+        private void TestPassedConcurrentAddAndRemoveAtAs<T>(T cList) where T : IList<int>
+        {
+            var listNode = cList[2];
+
+            Thread t = new Thread(
+                () =>
+                {
+                    cList.RemoveAt(1);
+                });
+            t.Start();
+
+            cList.Add(42);
+            t.Join();
+            NUnit.Framework.Assert.AreEqual(4, cList.Count);
         }
 
         [Test]
@@ -122,7 +467,7 @@ namespace Concurrency.Chess
         [RegressionTestExpectedResult(TestResultType.Passed)]
         public void TestPassedConcurrentAddAndRemoveRange()
         {
-            var cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            ThreadSafeList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
             var listNode = cList[2];
 
             Thread t = new Thread(
@@ -134,6 +479,7 @@ namespace Concurrency.Chess
 
             cList.Add(42);
             t.Join();
+            NUnit.Framework.Assert.AreEqual(3, cList.Count);
         }
 
         [Test]
@@ -141,7 +487,7 @@ namespace Concurrency.Chess
         [RegressionTestExpectedResult(TestResultType.Passed)]
         public void TestPassedConcurrentAddAndRemoveAll()
         {
-            var cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            ThreadSafeList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
             var listNode = cList[2];
 
             Thread t = new Thread(
@@ -153,6 +499,41 @@ namespace Concurrency.Chess
 
             cList.Add(42);
             t.Join();
+            NUnit.Framework.Assert.AreEqual(3, cList.Count);
+        }
+
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentIndexOfAndRemove()
+        {
+            ThreadSafeList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            TestPassedConcurrentIndexOfAndRemoveAs(cList);
+        }
+
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentIndexOfAndRemoveCastAsIList()
+        {
+            IList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            TestPassedConcurrentIndexOfAndRemoveAs(cList);
+        }
+
+        private void TestPassedConcurrentIndexOfAndRemoveAs<T>(T cList) where T : IList<int>
+        {
+            var listNode = cList[2];
+
+            Thread t = new Thread(
+                () =>
+                {
+                    var index = cList.IndexOf(3);
+                });
+            t.Start();
+
+            cList.Remove(listNode);
+            t.Join();
+            NUnit.Framework.Assert.AreEqual(3, cList.Count);
         }
 
         [Test]
@@ -160,7 +541,7 @@ namespace Concurrency.Chess
         [RegressionTestExpectedResult(TestResultType.Passed)]
         public void TestPassedConcurrentIndexOfWithIndexAndRemove()
         {
-            var cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            ThreadSafeList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
             var listNode = cList[2];
 
             Thread t = new Thread(
@@ -172,6 +553,7 @@ namespace Concurrency.Chess
 
             cList.Remove(listNode);
             t.Join();
+            NUnit.Framework.Assert.AreEqual(3, cList.Count);
         }
 
         [Test]
@@ -179,7 +561,7 @@ namespace Concurrency.Chess
         [RegressionTestExpectedResult(TestResultType.Passed)]
         public void TestPassedConcurrentIndexOfWithIndexAndCountAndRemove()
         {
-            var cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            ThreadSafeList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
             var listNode = cList[2];
 
             Thread t = new Thread(
@@ -191,6 +573,7 @@ namespace Concurrency.Chess
 
             cList.Remove(listNode);
             t.Join();
+            NUnit.Framework.Assert.AreEqual(3, cList.Count);
         }
 
         [Test]
@@ -198,7 +581,7 @@ namespace Concurrency.Chess
         [RegressionTestExpectedResult(TestResultType.Passed)]
         public void TestPassedConcurrentLastIndexOfAndRemove()
         {
-            var cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            ThreadSafeList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
             var listNode = cList[2];
 
             Thread t = new Thread(
@@ -210,6 +593,7 @@ namespace Concurrency.Chess
 
             cList.Remove(listNode);
             t.Join();
+            NUnit.Framework.Assert.AreEqual(3, cList.Count);
         }
 
         [Test]
@@ -217,7 +601,7 @@ namespace Concurrency.Chess
         [RegressionTestExpectedResult(TestResultType.Passed)]
         public void TestPassedConcurrentLastIndexOfWithIndexAndRemove()
         {
-            var cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            ThreadSafeList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
             var listNode = cList[2];
 
             Thread t = new Thread(
@@ -229,6 +613,7 @@ namespace Concurrency.Chess
 
             cList.Remove(listNode);
             t.Join();
+            NUnit.Framework.Assert.AreEqual(3, cList.Count);
         }
 
         [Test]
@@ -236,7 +621,7 @@ namespace Concurrency.Chess
         [RegressionTestExpectedResult(TestResultType.Passed)]
         public void TestPassedConcurrentLastIndexOfWithIndexAndCountAndRemove()
         {
-            var cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            ThreadSafeList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
             var listNode = cList[2];
 
             Thread t = new Thread(
@@ -248,6 +633,7 @@ namespace Concurrency.Chess
 
             cList.Remove(listNode);
             t.Join();
+            NUnit.Framework.Assert.AreEqual(3, cList.Count);
         }
 
         [Test]
@@ -255,7 +641,21 @@ namespace Concurrency.Chess
         [RegressionTestExpectedResult(TestResultType.Passed)]
         public void TestPassedConcurrentAddAndReverse()
         {
-            var cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            ThreadSafeList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            TestPassedConcurrentAddAndReverseAs(cList);
+        }
+
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentAddAndReverseCastAsIListViaLinq()
+        {
+            IList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            TestPassedConcurrentAddAndReverseAs(cList);
+        }
+
+        private void TestPassedConcurrentAddAndReverseAs<T>(T cList) where T : IList<int>
+        {
             var listNode = cList[2];
 
             Thread t = new Thread(
@@ -267,6 +667,7 @@ namespace Concurrency.Chess
 
             cList.Reverse();
             t.Join();
+            NUnit.Framework.Assert.AreEqual(5, cList.Count);
         }
 
         [Test]
@@ -274,7 +675,7 @@ namespace Concurrency.Chess
         [RegressionTestExpectedResult(TestResultType.Passed)]
         public void TestPassedConcurrentAddAndReverseWithIndexAndCount()
         {
-            var cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            ThreadSafeList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
             var listNode = cList[2];
 
             Thread t = new Thread(
@@ -286,6 +687,7 @@ namespace Concurrency.Chess
 
             cList.Reverse(1, 2);
             t.Join();
+            NUnit.Framework.Assert.AreEqual(5, cList.Count);
         }
 
         [Test]
@@ -293,7 +695,7 @@ namespace Concurrency.Chess
         [RegressionTestExpectedResult(TestResultType.Passed)]
         public void TestPassedConcurrentAddAndSort()
         {
-            var cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            ThreadSafeList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
             var listNode = cList[2];
 
             Thread t = new Thread(
@@ -305,6 +707,7 @@ namespace Concurrency.Chess
 
             cList.Sort();
             t.Join();
+            NUnit.Framework.Assert.AreEqual(5, cList.Count);
         }
 
         [Test]
@@ -312,7 +715,7 @@ namespace Concurrency.Chess
         [RegressionTestExpectedResult(TestResultType.Passed)]
         public void TestPassedConcurrentAddAndSortWithComparator()
         {
-            var cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            ThreadSafeList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
             var listNode = cList[2];
 
             Thread t = new Thread(
@@ -324,6 +727,7 @@ namespace Concurrency.Chess
 
             cList.Sort(Comparer<int>.Default);
             t.Join();
+            NUnit.Framework.Assert.AreEqual(5, cList.Count);
         }
 
         [Test]
@@ -331,7 +735,7 @@ namespace Concurrency.Chess
         [RegressionTestExpectedResult(TestResultType.Passed)]
         public void TestPassedConcurrentAddAndSortWithComparison()
         {
-            var cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            ThreadSafeList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
             var listNode = cList[2];
 
             Thread t = new Thread(
@@ -348,6 +752,7 @@ namespace Concurrency.Chess
                 else return 0;
             });
             t.Join();
+            NUnit.Framework.Assert.AreEqual(5, cList.Count);
         }
 
         [Test]
@@ -355,7 +760,7 @@ namespace Concurrency.Chess
         [RegressionTestExpectedResult(TestResultType.Passed)]
         public void TestPassedConcurrentAddAndSortWithComparisonWithStartIndexAndCount()
         {
-            var cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            ThreadSafeList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
             var listNode = cList[2];
 
             Thread t = new Thread(
@@ -367,6 +772,7 @@ namespace Concurrency.Chess
 
             cList.Sort(1, 2, Comparer<int>.Default);
             t.Join();
+            NUnit.Framework.Assert.AreEqual(5, cList.Count);
         }
 
         [Test]
@@ -374,7 +780,7 @@ namespace Concurrency.Chess
         [RegressionTestExpectedResult(TestResultType.Passed)]
         public void TestPassedConcurrentAddAndTrimExcess()
         {
-            var cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            ThreadSafeList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
             var listNode = cList[2];
 
             Thread t = new Thread(
@@ -386,6 +792,7 @@ namespace Concurrency.Chess
 
             cList.TrimExcess();
             t.Join();
+            NUnit.Framework.Assert.AreEqual(5, cList.Count);
         }
 
         [Test]
@@ -393,7 +800,7 @@ namespace Concurrency.Chess
         [RegressionTestExpectedResult(TestResultType.Passed)]
         public void TestPassedConcurrentAddAndBinarySearch()
         {
-            var cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            ThreadSafeList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
             var listNode = cList[2];
 
             Thread t = new Thread(
@@ -405,6 +812,7 @@ namespace Concurrency.Chess
 
             cList.BinarySearch(listNode);
             t.Join();
+            NUnit.Framework.Assert.AreEqual(5, cList.Count);
         }
 
         [Test]
@@ -412,7 +820,7 @@ namespace Concurrency.Chess
         [RegressionTestExpectedResult(TestResultType.Passed)]
         public void TestPassedConcurrentAddAndBinarySearchWithComparer()
         {
-            var cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            ThreadSafeList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
             var listNode = cList[2];
 
             Thread t = new Thread(
@@ -424,6 +832,7 @@ namespace Concurrency.Chess
 
             cList.BinarySearch(listNode, Comparer<int>.Default);
             t.Join();
+            NUnit.Framework.Assert.AreEqual(5, cList.Count);
         }
 
         [Test]
@@ -431,7 +840,7 @@ namespace Concurrency.Chess
         [RegressionTestExpectedResult(TestResultType.Passed)]
         public void TestPassedConcurrentAddAndBinarySearchWithStartIndexAndCountAndComparer()
         {
-            var cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            ThreadSafeList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
             var listNode = cList[2];
 
             Thread t = new Thread(
@@ -443,6 +852,7 @@ namespace Concurrency.Chess
 
             cList.BinarySearch(1, 2, listNode, Comparer<int>.Default);
             t.Join();
+            NUnit.Framework.Assert.AreEqual(5, cList.Count);
         }
 
         [Test]
@@ -450,7 +860,7 @@ namespace Concurrency.Chess
         [RegressionTestExpectedResult(TestResultType.Passed)]
         public void TestPassedConcurrentAddAndFind()
         {
-            var cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            ThreadSafeList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
             var listNode = cList[2];
 
             Thread t = new Thread(
@@ -462,6 +872,7 @@ namespace Concurrency.Chess
 
             cList.Find(e => e == 3);
             t.Join();
+            NUnit.Framework.Assert.AreEqual(5, cList.Count);
         }
 
         [Test]
@@ -469,7 +880,7 @@ namespace Concurrency.Chess
         [RegressionTestExpectedResult(TestResultType.Passed)]
         public void TestPassedConcurrentAddAndFindAll()
         {
-            var cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            ThreadSafeList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
             var listNode = cList[2];
 
             Thread t = new Thread(
@@ -481,6 +892,7 @@ namespace Concurrency.Chess
 
             cList.FindAll(e => e == 3);
             t.Join();
+            NUnit.Framework.Assert.AreEqual(5, cList.Count);
         }
 
         [Test]
@@ -488,7 +900,7 @@ namespace Concurrency.Chess
         [RegressionTestExpectedResult(TestResultType.Passed)]
         public void TestPassedThreadSafeOfListReturnedByFindAll()
         {
-            var cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            ThreadSafeList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
             var listNode = cList[2];
 
             var found = cList.FindAll(e => e == 3);
@@ -502,6 +914,7 @@ namespace Concurrency.Chess
 
             found.Add(777);
             t.Join();
+            NUnit.Framework.Assert.AreEqual(3, found.Count);
         }
 
         [Test]
@@ -509,7 +922,7 @@ namespace Concurrency.Chess
         [RegressionTestExpectedResult(TestResultType.Passed)]
         public void TestPassedConcurrentAddAndFindIndex()
         {
-            var cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            ThreadSafeList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
             var listNode = cList[2];
 
             Thread t = new Thread(
@@ -521,6 +934,7 @@ namespace Concurrency.Chess
 
             cList.FindIndex(e => e == 3);
             t.Join();
+            NUnit.Framework.Assert.AreEqual(5, cList.Count);
         }
 
         [Test]
@@ -528,7 +942,7 @@ namespace Concurrency.Chess
         [RegressionTestExpectedResult(TestResultType.Passed)]
         public void TestPassedConcurrentAddAndFindIndexWithStartIndex()
         {
-            var cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            ThreadSafeList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
             var listNode = cList[2];
 
             Thread t = new Thread(
@@ -540,6 +954,7 @@ namespace Concurrency.Chess
 
             cList.FindIndex(1, e => e == 3);
             t.Join();
+            NUnit.Framework.Assert.AreEqual(5, cList.Count);
         }
 
         [Test]
@@ -547,7 +962,7 @@ namespace Concurrency.Chess
         [RegressionTestExpectedResult(TestResultType.Passed)]
         public void TestPassedConcurrentAddAndFindIndexWithStartIndexAndCount()
         {
-            var cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            ThreadSafeList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
             var listNode = cList[2];
 
             Thread t = new Thread(
@@ -559,6 +974,7 @@ namespace Concurrency.Chess
 
             cList.FindIndex(1, 3, e => e == 3);
             t.Join();
+            NUnit.Framework.Assert.AreEqual(5, cList.Count);
         }
 
         [Test]
@@ -566,7 +982,7 @@ namespace Concurrency.Chess
         [RegressionTestExpectedResult(TestResultType.Passed)]
         public void TestPassedConcurrentAddAndFindLast()
         {
-            var cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            ThreadSafeList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
             var listNode = cList[2];
 
             Thread t = new Thread(
@@ -578,6 +994,7 @@ namespace Concurrency.Chess
 
             cList.FindLast(e => e == 3);
             t.Join();
+            NUnit.Framework.Assert.AreEqual(5, cList.Count);
         }
 
         [Test]
@@ -585,7 +1002,7 @@ namespace Concurrency.Chess
         [RegressionTestExpectedResult(TestResultType.Passed)]
         public void TestPassedConcurrentAddAndFindLastIndex()
         {
-            var cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            ThreadSafeList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
             var listNode = cList[2];
 
             Thread t = new Thread(
@@ -597,6 +1014,7 @@ namespace Concurrency.Chess
 
             cList.FindLastIndex(e => e == 3);
             t.Join();
+            NUnit.Framework.Assert.AreEqual(5, cList.Count);
         }
 
         [Test]
@@ -604,7 +1022,7 @@ namespace Concurrency.Chess
         [RegressionTestExpectedResult(TestResultType.Passed)]
         public void TestPassedConcurrentAddAndFindLastIndexWithStartIndex()
         {
-            var cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            ThreadSafeList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
             var listNode = cList[2];
 
             Thread t = new Thread(
@@ -616,6 +1034,7 @@ namespace Concurrency.Chess
 
             cList.FindLastIndex(1, e => e == 3);
             t.Join();
+            NUnit.Framework.Assert.AreEqual(5, cList.Count);
         }
 
         [Test]
@@ -623,7 +1042,7 @@ namespace Concurrency.Chess
         [RegressionTestExpectedResult(TestResultType.Passed)]
         public void TestPassedConcurrentAddAndFindLastIndexWithStartIndexAndCount()
         {
-            var cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            ThreadSafeList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
             var listNode = cList[2];
 
             Thread t = new Thread(
@@ -635,6 +1054,7 @@ namespace Concurrency.Chess
 
             cList.FindLastIndex(3, 3, e => e == 3);
             t.Join();
+            NUnit.Framework.Assert.AreEqual(5, cList.Count);
         }
 
         [Test]
@@ -642,7 +1062,7 @@ namespace Concurrency.Chess
         [RegressionTestExpectedResult(TestResultType.Passed)]
         public void TestPassedConcurrentAddAndExists()
         {
-            var cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            ThreadSafeList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
             var listNode = cList[2];
 
             Thread t = new Thread(
@@ -654,6 +1074,7 @@ namespace Concurrency.Chess
 
             cList.Exists(e => e == 2);
             t.Join();
+            NUnit.Framework.Assert.AreEqual(5, cList.Count);
         }
 
         [Test]
@@ -661,7 +1082,7 @@ namespace Concurrency.Chess
         [RegressionTestExpectedResult(TestResultType.Passed)]
         public void TestPassedConcurrentAddAndTrueForAll()
         {
-            var cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            ThreadSafeList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
             var listNode = cList[2];
 
             Thread t = new Thread(
@@ -673,6 +1094,7 @@ namespace Concurrency.Chess
 
             cList.TrueForAll(e => e == 2);
             t.Join();
+            NUnit.Framework.Assert.AreEqual(5, cList.Count);
         }
 
         [Test]
@@ -680,7 +1102,7 @@ namespace Concurrency.Chess
         [RegressionTestExpectedResult(TestResultType.Passed)]
         public void TestPassedConcurrentAddAndForEach()
         {
-            var cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            ThreadSafeList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
             var listNode = cList[2];
 
             Thread t = new Thread(
@@ -692,6 +1114,7 @@ namespace Concurrency.Chess
 
             cList.ForEach(e => Console.WriteLine(e));
             t.Join();
+            NUnit.Framework.Assert.AreEqual(5, cList.Count);
         }
 
         [Test]
@@ -699,7 +1122,7 @@ namespace Concurrency.Chess
         [RegressionTestExpectedResult(TestResultType.Passed)]
         public void TestPassedConcurrentAddAndConvertAll()
         {
-            var cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            ThreadSafeList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
             var listNode = cList[2];
 
             Thread t = new Thread(
@@ -711,6 +1134,7 @@ namespace Concurrency.Chess
 
             cList.ConvertAll<string>(e => e.ToString());
             t.Join();
+            NUnit.Framework.Assert.AreEqual(5, cList.Count);
         }
 
         [Test]
@@ -718,7 +1142,7 @@ namespace Concurrency.Chess
         [RegressionTestExpectedResult(TestResultType.Passed)]
         public void TestPassedConcurrentAddAndAsReadOnly()
         {
-            var cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            ThreadSafeList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
             var listNode = cList[2];
 
             Thread t = new Thread(
@@ -734,6 +1158,7 @@ namespace Concurrency.Chess
                 var e1 = e;
             }
             t.Join();
+            NUnit.Framework.Assert.IsTrue(result.Count == 3 || result.Count == 4);
         }
 
         [Test]
@@ -741,7 +1166,7 @@ namespace Concurrency.Chess
         [RegressionTestExpectedResult(TestResultType.Passed)]
         public void TestPassedConstructor()
         {
-            var cList = new ThreadSafeList<int>();
+            ThreadSafeList<int> cList = new ThreadSafeList<int>();
 
             Thread t = new Thread(
                 () =>
@@ -752,6 +1177,7 @@ namespace Concurrency.Chess
 
             cList.Add(1);
             t.Join();
+            NUnit.Framework.Assert.AreEqual(2, cList.Count);
         }
 
         [Test]
@@ -759,7 +1185,7 @@ namespace Concurrency.Chess
         [RegressionTestExpectedResult(TestResultType.Passed)]
         public void TestPassedConstructorWithCapacity()
         {
-            var cList = new ThreadSafeList<int>(10);
+            ThreadSafeList<int> cList = new ThreadSafeList<int>(10);
 
             Thread t = new Thread(
                 () =>
@@ -770,6 +1196,7 @@ namespace Concurrency.Chess
 
             cList.Add(1);
             t.Join();
+            NUnit.Framework.Assert.AreEqual(2, cList.Count);
         }
 
         [Test]
@@ -777,7 +1204,7 @@ namespace Concurrency.Chess
         [RegressionTestExpectedResult(TestResultType.Passed)]
         public void TestPassedConcurrentAddAndCopyTo()
         {
-            var cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            ThreadSafeList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
             var listNode = cList[2];
 
             Thread t = new Thread(
@@ -790,6 +1217,7 @@ namespace Concurrency.Chess
             var result = new int[10];
             cList.CopyTo(result);
             t.Join();
+            NUnit.Framework.Assert.AreEqual(5, cList.Count);
         }
 
         [Test]
@@ -797,7 +1225,7 @@ namespace Concurrency.Chess
         [RegressionTestExpectedResult(TestResultType.Passed)]
         public void TestPassedConcurrentAddAndCopyToWithArrayIndex()
         {
-            var cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            ThreadSafeList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
             var listNode = cList[2];
 
             Thread t = new Thread(
@@ -810,6 +1238,28 @@ namespace Concurrency.Chess
             var result = new int[10];
             cList.CopyTo(result, 3);
             t.Join();
+            NUnit.Framework.Assert.AreEqual(5, cList.Count);
+        }
+
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentAddAndCopyToWithArrayIndexCastAsIList()
+        {
+            IList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            var listNode = cList[2];
+
+            Thread t = new Thread(
+                () =>
+                {
+                    cList.Add(42);
+                });
+            t.Start();
+
+            var result = new int[10];
+            cList.CopyTo(result, 3);
+            t.Join();
+            NUnit.Framework.Assert.AreEqual(5, cList.Count);
         }
 
         [Test]
@@ -817,7 +1267,7 @@ namespace Concurrency.Chess
         [RegressionTestExpectedResult(TestResultType.Passed)]
         public void TestPassedConcurrentAddAndCopyToWithBothIndexAndCount()
         {
-            var cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            ThreadSafeList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
             var listNode = cList[2];
 
             Thread t = new Thread(
@@ -830,6 +1280,7 @@ namespace Concurrency.Chess
             var result = new int[10];
             cList.CopyTo(1, result, 0, 2);
             t.Join();
+            NUnit.Framework.Assert.AreEqual(5, cList.Count);
         }
 
         [Test]
@@ -837,7 +1288,7 @@ namespace Concurrency.Chess
         [RegressionTestExpectedResult(TestResultType.Passed)]
         public void TestPassedConcurrentAddAndGetRange()
         {
-            var cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            ThreadSafeList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
             var listNode = cList[2];
 
             Thread t = new Thread(
@@ -849,6 +1300,7 @@ namespace Concurrency.Chess
 
             cList.GetRange(1, 2);
             t.Join();
+            NUnit.Framework.Assert.AreEqual(5, cList.Count);
         }
 
         [Test]
@@ -856,7 +1308,7 @@ namespace Concurrency.Chess
         [RegressionTestExpectedResult(TestResultType.Passed)]
         public void TestPassedConcurrentAddAndToArray()
         {
-            var cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            ThreadSafeList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
             var listNode = cList[2];
 
             Thread t = new Thread(
@@ -865,9 +1317,39 @@ namespace Concurrency.Chess
                     cList.Add(42);
                 });
             t.Start();
-
             cList.ToArray();
             t.Join();
+            NUnit.Framework.Assert.AreEqual(5, cList.Count);
+        }
+
+        [Test]
+        [ChessInstrumentAssembly("System.Core")]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentAddAndToArrayCastAsIListViaLinq()
+        {
+            IList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            var listNode = cList[2];
+
+            Thread t = new Thread(
+                () =>
+                {
+                    cList.Add(42);
+                });
+            t.Start();
+            int[] a = null;
+            try
+            {
+                a = cList.ToArray();
+            }
+            catch (ArgumentException e)
+            {
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.StackTrace);
+            }
+            t.Join();
+            NUnit.Framework.Assert.AreEqual(5, cList.Count);
+            NUnit.Framework.Assert.IsTrue(a == null || a.Length == 4 || a.Length == 5);
         }
 
     }

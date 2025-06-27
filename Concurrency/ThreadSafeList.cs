@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Concurrency
 {
-    public class ThreadSafeList<T> : List<T>
+    public class ThreadSafeList<T> : List<T>, IList<T>
     {
         private List<T> _list;
         private object _root;
@@ -393,13 +393,13 @@ namespace Concurrency
             }
         }
 
-        //public new ReadOnlyCollection<T> AsReadOnly()
-        //{
-        //    lock (_root)
-        //    {
-        //        return AsReadOnly();
-        //    }
-        //}
+        public new ReadOnlyCollection<T> AsReadOnly()
+        {
+            lock (_root)
+            {
+                return new ReadOnlyCollection<T>(this);
+            }
+        }
 
         public ThreadSafeList()
         {
@@ -437,7 +437,7 @@ namespace Concurrency
             }
         }
 
-        public new T[] ToArray()
+        public T[] ToArray()
         {
             lock (_root)
             {
