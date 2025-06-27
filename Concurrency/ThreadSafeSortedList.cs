@@ -31,7 +31,16 @@ namespace Concurrency.Chess
             }
         }
 
-        public int Count => ((ICollection<KeyValuePair<TKey, TValue>>)_sortedList).Count;
+        public int Count
+        {
+            get
+            {
+                lock (_root)
+                {
+                    return _sortedList.Count;
+                }
+            }
+        }
 
         public bool IsReadOnly => ((ICollection<KeyValuePair<TKey, TValue>>)_sortedList).IsReadOnly;
 
@@ -81,27 +90,42 @@ namespace Concurrency.Chess
 
         public void Add(KeyValuePair<TKey, TValue> item)
         {
-            ((ICollection<KeyValuePair<TKey, TValue>>)_sortedList).Add(item);
+            lock (_root)
+            {
+                ((ICollection<KeyValuePair<TKey, TValue>>)_sortedList).Add(item);
+            }
         }
 
         public void Clear()
         {
-            ((ICollection<KeyValuePair<TKey, TValue>>)_sortedList).Clear();
+            lock (_root)
+            {
+                _sortedList.Clear();
+            }
         }
 
         public bool Contains(KeyValuePair<TKey, TValue> item)
         {
-            return ((ICollection<KeyValuePair<TKey, TValue>>)_sortedList).Contains(item);
+            lock (_root)
+            {
+                return ((ICollection<KeyValuePair<TKey, TValue>>)_sortedList).Contains(item);
+            }
         }
 
         public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
         {
-            ((ICollection<KeyValuePair<TKey, TValue>>)_sortedList).CopyTo(array, arrayIndex);
+            lock (_root)
+            {
+                ((ICollection<KeyValuePair<TKey, TValue>>)_sortedList).CopyTo(array, arrayIndex);
+            }
         }
 
         public bool Remove(KeyValuePair<TKey, TValue> item)
         {
-            return ((ICollection<KeyValuePair<TKey, TValue>>)_sortedList).Remove(item);
+            lock (_root)
+            {
+                return ((ICollection<KeyValuePair<TKey, TValue>>)_sortedList).Remove(item);
+            }
         }
 
         public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()

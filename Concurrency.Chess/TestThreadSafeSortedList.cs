@@ -305,5 +305,243 @@ namespace Concurrency.Chess
             NUnit.Framework.Assert.AreEqual("task10", value);
         }
 
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentAddAndCount()
+        {
+            ThreadSafeSortedList<int, string> cSortedList = new ThreadSafeSortedList<int, string>(new Dictionary<int, string> { { 1, "task1" }, { 10, "task10" }, { 20, "task20" } });
+            TestPassedConcurrentAddAndCountAs(cSortedList);
+        }
+
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentAddAndCountCastAsIDictionary()
+        {
+            IDictionary<int, string> cSortedList = new ThreadSafeSortedList<int, string>(new Dictionary<int, string> { { 1, "task1" }, { 10, "task10" }, { 20, "task20" } });
+            TestPassedConcurrentAddAndCountAs(cSortedList);
+        }
+
+        private void TestPassedConcurrentAddAndCountAs<T>(T cSortedList) where T : IDictionary<int, string>
+        {
+            Thread t = new Thread(
+                () =>
+                {
+                    cSortedList.Add(42, "magic");
+                });
+            t.Start();
+
+            var count = cSortedList.Count;
+            t.Join();
+            NUnit.Framework.Assert.AreEqual(4, cSortedList.Count);
+            NUnit.Framework.Assert.IsTrue(count == 3 || count == 4);
+        }
+
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentAddAndIsReadOnly()
+        {
+            ThreadSafeSortedList<int, string> cSortedList = new ThreadSafeSortedList<int, string>(new Dictionary<int, string> { { 1, "task1" }, { 10, "task10" }, { 20, "task20" } });
+            TestPassedConcurrentAddAndIsReadOnlyAs(cSortedList);
+        }
+
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentAddAndIsReadOnlyCastAsIDictionary()
+        {
+            IDictionary<int, string> cSortedList = new ThreadSafeSortedList<int, string>(new Dictionary<int, string> { { 1, "task1" }, { 10, "task10" }, { 20, "task20" } });
+            TestPassedConcurrentAddAndIsReadOnlyAs(cSortedList);
+        }
+
+        private void TestPassedConcurrentAddAndIsReadOnlyAs<T>(T cSortedList) where T : IDictionary<int, string>
+        {
+            Thread t = new Thread(
+                () =>
+                {
+                    cSortedList.Add(42, "magic");
+                });
+            t.Start();
+
+            var isReadOnly = cSortedList.IsReadOnly;
+            t.Join();
+            NUnit.Framework.Assert.AreEqual(4, cSortedList.Count);
+            NUnit.Framework.Assert.IsFalse(isReadOnly);
+        }
+
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentAddKeyValuePair()
+        {
+            ThreadSafeSortedList<int, string> cSortedList = new ThreadSafeSortedList<int, string>();
+            TestPassedConcurrentAddKeyValuePairAs(cSortedList);
+        }
+
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentAddKeyValuePairCastAsIDictionary()
+        {
+            IDictionary<int, string> cSortedList = new ThreadSafeSortedList<int, string>();
+            TestPassedConcurrentAddKeyValuePairAs(cSortedList);
+        }
+
+        private void TestPassedConcurrentAddKeyValuePairAs<T>(T cSortedList) where T : IDictionary<int, string>
+        {
+            Thread t = new Thread(
+                () =>
+                {
+                    cSortedList.Add(new KeyValuePair<int, string>(1, "value1"));
+                });
+            t.Start();
+
+            cSortedList.Add(new KeyValuePair<int, string>(2, "value2"));
+            t.Join();
+            NUnit.Framework.Assert.AreEqual(2, cSortedList.Count);
+        }
+
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentAddAndClear()
+        {
+            ThreadSafeSortedList<int, string> cSortedList = new ThreadSafeSortedList<int, string>(new Dictionary<int, string> { { 1, "task1" }, { 10, "task10" }, { 20, "task20" } });
+            TestPassedConcurrentAddAndClearAs(cSortedList);
+        }
+
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentAddAndClearCastAsIDictionary()
+        {
+            IDictionary<int, string> cSortedList = new ThreadSafeSortedList<int, string>(new Dictionary<int, string> { { 1, "task1" }, { 10, "task10" }, { 20, "task20" } });
+            TestPassedConcurrentAddAndClearAs(cSortedList);
+        }
+
+        private void TestPassedConcurrentAddAndClearAs<T>(T cSortedList) where T : IDictionary<int, string>
+        {
+            Thread t = new Thread(
+                () =>
+                {
+                    cSortedList.Add(42, "magic");
+                });
+            t.Start();
+
+            cSortedList.Clear();
+            t.Join();
+            NUnit.Framework.Assert.IsTrue(cSortedList.Count == 0 || cSortedList.Count == 1);
+        }
+
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentAddAndContains()
+        {
+            ThreadSafeSortedList<int, string> cSortedList = new ThreadSafeSortedList<int, string>(new Dictionary<int, string> { { 1, "task1" }, { 10, "task10" }, { 20, "task20" } });
+            TestPassedConcurrentAddAndContainsAs(cSortedList);
+        }
+
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentAddAndContainsCastAsIDictionary()
+        {
+            IDictionary<int, string> cSortedList = new ThreadSafeSortedList<int, string>(new Dictionary<int, string> { { 1, "task1" }, { 10, "task10" }, { 20, "task20" } });
+            TestPassedConcurrentAddAndContainsAs(cSortedList);
+        }
+
+        private void TestPassedConcurrentAddAndContainsAs<T>(T cSortedList) where T : IDictionary<int, string>
+        {
+            Thread t = new Thread(
+                () =>
+                {
+                    cSortedList.Add(42, "magic");
+                });
+            t.Start();
+
+            var contains = cSortedList.Contains(new KeyValuePair<int, string>(10, "task10"));
+            t.Join();
+            NUnit.Framework.Assert.AreEqual(4, cSortedList.Count);
+            NUnit.Framework.Assert.IsTrue(contains);
+        }
+
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentAddAndCopyToWithIndex()
+        {
+            ThreadSafeSortedList<int, string> cSortedList = new ThreadSafeSortedList<int, string>(new Dictionary<int, string> { { 1, "task1" }, { 10, "task10" }, { 20, "task20" } });
+            TestPassedConcurrentAddAndCopyToWithIndexAs(cSortedList);
+        }
+
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentAddAndCopyToWithIndexCastAsIDictionary()
+        {
+            IDictionary<int, string> cSortedList = new ThreadSafeSortedList<int, string>(new Dictionary<int, string> { { 1, "task1" }, { 10, "task10" }, { 20, "task20" } });
+            TestPassedConcurrentAddAndCopyToWithIndexAs(cSortedList);
+        }
+
+        private void TestPassedConcurrentAddAndCopyToWithIndexAs<T>(T cSortedList) where T : IDictionary<int, string>
+        {
+            Thread t = new Thread(
+                () =>
+                {
+                    cSortedList.Add(42, "magic");
+                });
+            t.Start();
+
+            var array = new KeyValuePair<int, string>[cSortedList.Count];
+            try
+            {
+                cSortedList.CopyTo(array, 0);
+            }
+            catch (ArgumentException e)
+            {
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.StackTrace);
+            }
+            t.Join();
+            NUnit.Framework.Assert.AreEqual(4, cSortedList.Count);
+            NUnit.Framework.Assert.IsTrue(array.Length == 4 || array.Length == 3);
+        }
+
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentAddAndRemoveKeyValuePair()
+        {
+            ThreadSafeSortedList<int, string> cSortedList = new ThreadSafeSortedList<int, string>(new Dictionary<int, string> { { 1, "task1" }, { 10, "task10" }, { 20, "task20" } });
+            TestPassedConcurrentAddAndRemoveKeyValuePairAs(cSortedList);
+        }
+
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentAddAndRemoveKeyValuePairCastAsIDictionary()
+        {
+            IDictionary<int, string> cSortedList = new ThreadSafeSortedList<int, string>(new Dictionary<int, string> { { 1, "task1" }, { 10, "task10" }, { 20, "task20" } });
+            TestPassedConcurrentAddAndRemoveKeyValuePairAs(cSortedList);
+        }
+
+        private void TestPassedConcurrentAddAndRemoveKeyValuePairAs<T>(T cSortedList) where T : IDictionary<int, string>
+        {
+            Thread t = new Thread(
+                () =>
+                {
+                    cSortedList.Add(42, "magic");
+                });
+            t.Start();
+
+            var removed = cSortedList.Remove(new KeyValuePair<int, string>(10, "task10"));
+            t.Join();
+            NUnit.Framework.Assert.AreEqual(3, cSortedList.Count);
+            NUnit.Framework.Assert.IsTrue(removed);
+        }
+
     }
 }
