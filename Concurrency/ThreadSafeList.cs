@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Concurrency
 {
-    public class ThreadSafeList<T> : List<T>, IList<T>
+    public class ThreadSafeList<T> : IList<T>
     {
         private List<T> _list;
         private object _root;
@@ -19,7 +19,7 @@ namespace Concurrency
             _root = ((ICollection)list).SyncRoot;
         }
 
-        public new int Count
+        public int Count
         {
             get
             {
@@ -38,7 +38,7 @@ namespace Concurrency
             }
         }
 
-        public new void Add(T item)
+        public void Add(T item)
         {
             lock (_root)
             {
@@ -46,7 +46,7 @@ namespace Concurrency
             }
         }
 
-        public new void Clear()
+        public void Clear()
         {
             lock (_root)
             {
@@ -54,7 +54,7 @@ namespace Concurrency
             }
         }
 
-        public new bool Contains(T item)
+        public bool Contains(T item)
         {
             lock (_root)
             {
@@ -62,7 +62,7 @@ namespace Concurrency
             }
         }
 
-        public new void CopyTo(T[] array, int arrayIndex)
+        public void CopyTo(T[] array, int arrayIndex)
         {
             lock (_root)
             {
@@ -70,7 +70,7 @@ namespace Concurrency
             }
         }
 
-        public new bool Remove(T item)
+        public bool Remove(T item)
         {
             lock (_root)
             {
@@ -78,7 +78,7 @@ namespace Concurrency
             }
         }
 
-        public new IEnumerator<T> GetEnumerator()
+        public IEnumerator<T> GetEnumerator()
         {
             lock (_root)
             {
@@ -87,7 +87,7 @@ namespace Concurrency
             }
         }
 
-        public new T this[int index]
+        public T this[int index]
         {
             get
             {
@@ -105,7 +105,7 @@ namespace Concurrency
             }
         }
 
-        public new int IndexOf(T item)
+        public int IndexOf(T item)
         {
             lock (_root)
             {
@@ -113,7 +113,7 @@ namespace Concurrency
             }
         }
 
-        public new void Insert(int index, T item)
+        public void Insert(int index, T item)
         {
             lock (_root)
             {
@@ -121,7 +121,7 @@ namespace Concurrency
             }
         }
 
-        public new void RemoveAt(int index)
+        public void RemoveAt(int index)
         {
             lock (_root)
             {
@@ -129,13 +129,13 @@ namespace Concurrency
             }
         }
 
-        public new int Capacity
+        public int Capacity
         {
             get { lock (_root) { return _list.Capacity; } }
             set { lock (_root) { _list.Capacity = value; } }
         }
 
-        public new void AddRange(IEnumerable<T> collection)
+        public void AddRange(IEnumerable<T> collection)
         {
             lock (_root)
             {
@@ -143,7 +143,7 @@ namespace Concurrency
             }
         }
 
-        public new void InsertRange(int index, IEnumerable<T> collection)
+        public void InsertRange(int index, IEnumerable<T> collection)
         {
             lock (_root)
             {
@@ -151,7 +151,7 @@ namespace Concurrency
             }
         }
 
-        public new void RemoveRange(int index, int count)
+        public void RemoveRange(int index, int count)
         {
             lock (_root)
             {
@@ -159,7 +159,7 @@ namespace Concurrency
             }
         }
 
-        public new int RemoveAll(Predicate<T> match)
+        public int RemoveAll(Predicate<T> match)
         {
             lock (_root)
             {
@@ -167,7 +167,7 @@ namespace Concurrency
             }
         }
 
-        public new int IndexOf(T item, int index)
+        public int IndexOf(T item, int index)
         {
             lock (_root)
             {
@@ -175,7 +175,7 @@ namespace Concurrency
             }
         }
 
-        public new int IndexOf(T item, int index, int count)
+        public int IndexOf(T item, int index, int count)
         {
             lock (_root)
             {
@@ -183,7 +183,7 @@ namespace Concurrency
             }
         }
 
-        public new int LastIndexOf(T item)
+        public int LastIndexOf(T item)
         {
             lock (_root)
             {
@@ -191,7 +191,7 @@ namespace Concurrency
             }
         }
 
-        public new int LastIndexOf(T item, int index)
+        public int LastIndexOf(T item, int index)
         {
             lock (_root)
             {
@@ -199,7 +199,7 @@ namespace Concurrency
             }
         }
 
-        public new int LastIndexOf(T item, int index, int count)
+        public int LastIndexOf(T item, int index, int count)
         {
             lock (_root)
             {
@@ -207,7 +207,7 @@ namespace Concurrency
             }
         }
 
-        public new void Reverse()
+        public void Reverse()
         {
             lock (_root)
             {
@@ -215,7 +215,7 @@ namespace Concurrency
             }
         }
 
-        public new void Reverse(int index, int count)
+        public void Reverse(int index, int count)
         {
             lock (_root)
             {
@@ -223,7 +223,7 @@ namespace Concurrency
             }
         }
 
-        public new void Sort()
+        public void Sort()
         {
             lock (_root)
             {
@@ -231,7 +231,7 @@ namespace Concurrency
             }
         }
 
-        public new void Sort(IComparer<T> comparer)
+        public void Sort(IComparer<T> comparer)
         {
             lock (_root)
             {
@@ -239,7 +239,7 @@ namespace Concurrency
             }
         }
 
-        public new void Sort(Comparison<T> comparison)
+        public void Sort(Comparison<T> comparison)
         {
             lock (_root)
             {
@@ -247,7 +247,7 @@ namespace Concurrency
             }
         }
 
-        public new void Sort(int index, int count, IComparer<T> comparer)
+        public void Sort(int index, int count, IComparer<T> comparer)
         {
             lock (_root)
             {
@@ -255,7 +255,7 @@ namespace Concurrency
             }
         }
 
-        public new void TrimExcess()
+        public void TrimExcess()
         {
             lock (_root)
             {
@@ -263,7 +263,7 @@ namespace Concurrency
             }
         }
 
-        public new int BinarySearch(T item)
+        public int BinarySearch(T item)
         {
             lock (_root)
             {
@@ -271,7 +271,7 @@ namespace Concurrency
             }
         }
 
-        public new int BinarySearch(T item, IComparer<T> comparer)
+        public int BinarySearch(T item, IComparer<T> comparer)
         {
             lock (_root)
             {
@@ -279,7 +279,7 @@ namespace Concurrency
             }
         }
 
-        public new int BinarySearch(int index, int count, T item, IComparer<T> comparer)
+        public int BinarySearch(int index, int count, T item, IComparer<T> comparer)
         {
             lock (_root)
             {
@@ -287,7 +287,7 @@ namespace Concurrency
             }
         }
 
-        public new T Find(Predicate<T> match)
+        public T Find(Predicate<T> match)
         {
             lock (_root)
             {
@@ -295,7 +295,7 @@ namespace Concurrency
             }
         }
 
-        public new ThreadSafeList<T> FindAll(Predicate<T> match)
+        public ThreadSafeList<T> FindAll(Predicate<T> match)
         {
             lock (_root)
             {
@@ -303,7 +303,7 @@ namespace Concurrency
             }
         }
 
-        public new int FindIndex(Predicate<T> match)
+        public int FindIndex(Predicate<T> match)
         {
             lock (_root)
             {
@@ -311,7 +311,7 @@ namespace Concurrency
             }
         }
 
-        public new int FindIndex(int startIndex, Predicate<T> match)
+        public int FindIndex(int startIndex, Predicate<T> match)
         {
             lock (_root)
             {
@@ -319,7 +319,7 @@ namespace Concurrency
             }
         }
 
-        public new int FindIndex(int startIndex, int count, Predicate<T> match)
+        public int FindIndex(int startIndex, int count, Predicate<T> match)
         {
             lock (_root)
             {
@@ -327,7 +327,7 @@ namespace Concurrency
             }
         }
 
-        public new T FindLast(Predicate<T> match)
+        public T FindLast(Predicate<T> match)
         {
             lock (_root)
             {
@@ -335,7 +335,7 @@ namespace Concurrency
             }
         }
 
-        public new int FindLastIndex(Predicate<T> match)
+        public int FindLastIndex(Predicate<T> match)
         {
             lock (_root)
             {
@@ -343,7 +343,7 @@ namespace Concurrency
             }
         }
 
-        public new int FindLastIndex(int startIndex, Predicate<T> match)
+        public int FindLastIndex(int startIndex, Predicate<T> match)
         {
             lock (_root)
             {
@@ -351,7 +351,7 @@ namespace Concurrency
             }
         }
 
-        public new int FindLastIndex(int startIndex, int count, Predicate<T> match)
+        public int FindLastIndex(int startIndex, int count, Predicate<T> match)
         {
             lock (_root)
             {
@@ -359,7 +359,7 @@ namespace Concurrency
             }
         }
 
-        public new bool Exists(Predicate<T> match)
+        public bool Exists(Predicate<T> match)
         {
             lock (_root)
             {
@@ -367,7 +367,7 @@ namespace Concurrency
             }
         }
 
-        public new bool TrueForAll(Predicate<T> match)
+        public bool TrueForAll(Predicate<T> match)
         {
             lock (_root)
             {
@@ -375,7 +375,7 @@ namespace Concurrency
             }
         }
 
-        public new void ForEach(Action<T> action)
+        public void ForEach(Action<T> action)
         {
             List<T> snapshot;
             lock (_root)
@@ -385,7 +385,7 @@ namespace Concurrency
             snapshot.ForEach(action);
         }
 
-        public new ThreadSafeList<TOutput> ConvertAll<TOutput>(Converter<T, TOutput> converter)
+        public ThreadSafeList<TOutput> ConvertAll<TOutput>(Converter<T, TOutput> converter)
         {
             lock (_root)
             {
@@ -393,7 +393,7 @@ namespace Concurrency
             }
         }
 
-        public new ReadOnlyCollection<T> AsReadOnly()
+        public ReadOnlyCollection<T> AsReadOnly()
         {
             lock (_root)
             {
@@ -413,7 +413,7 @@ namespace Concurrency
             _root = ((ICollection)_list).SyncRoot;
         }
 
-        public new void CopyTo(T[] array)
+        public void CopyTo(T[] array)
         {
             lock (_root)
             {
@@ -421,7 +421,7 @@ namespace Concurrency
             }
         }
 
-        public new void CopyTo(int index, T[] array, int arrayIndex, int count)
+        public void CopyTo(int index, T[] array, int arrayIndex, int count)
         {
             lock (_root)
             {
@@ -429,7 +429,7 @@ namespace Concurrency
             }
         }
 
-        public new List<T> GetRange(int index, int count)
+        public List<T> GetRange(int index, int count)
         {
             lock (_root)
             {
@@ -445,5 +445,9 @@ namespace Concurrency
             }
         }
 
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
     }
 }

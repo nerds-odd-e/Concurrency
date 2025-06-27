@@ -2,6 +2,7 @@
 using Microsoft.Concurrency.TestTools.UnitTesting.Chess;
 using NUnit.Framework;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -34,6 +35,58 @@ namespace Concurrency.Chess
         }
 
         private void TestPassedConcurrentEnumerateReadAndUpdateAs<T>(T cList) where T : IList<int>
+        {
+            var listNode = cList[2];
+
+            Thread t = new Thread(
+                () =>
+                {
+                    var enumerater = cList.GetEnumerator();
+                    while (enumerater.MoveNext())
+                    {
+                        int current = enumerater.Current;
+                    }
+                });
+            t.Start();
+
+            cList.Remove(listNode);
+            t.Join();
+            NUnit.Framework.Assert.AreEqual(3, cList.Count);
+        }
+
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentEnumerateReadViaIEnumerableAndAdd()
+        {
+            ThreadSafeList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+
+            Thread t = new Thread(
+                () =>
+                {
+                    IEnumerator enumerater = ((IEnumerable)cList).GetEnumerator();
+                    while (enumerater.MoveNext())
+                    {
+                        int current = (int)enumerater.Current;
+                    }
+                });
+            t.Start();
+
+            cList.Add(42);
+            t.Join();
+            NUnit.Framework.Assert.AreEqual(5, cList.Count);
+        }
+
+        //[Test]
+        //[DataRaceTestMethod]
+        //[RegressionTestExpectedResult(TestResultType.Passed)]
+        //public void TestPassedConcurrentEnumerateReadViaIEnumerableAndUpdateCastAsIList()
+        //{
+        //    IList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+        //    TestPassedConcurrentEnumerateReadViaIEnumerableAndUpdateAs(cList);
+        //}
+
+        private void TestPassedConcurrentEnumerateReadViaIEnumerableAndUpdateAs<T>(T cList) where T : IList<int>
         {
             var listNode = cList[2];
 
