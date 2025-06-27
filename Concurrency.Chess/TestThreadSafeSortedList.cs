@@ -20,8 +20,21 @@ namespace Concurrency.Chess
         [RegressionTestExpectedResult(TestResultType.Passed)]
         public void TestPassedConcurrentAdd()
         {
-            var cSortedList = new ThreadSafeSortedList<int, string>();
+            ThreadSafeSortedList<int, string> cSortedList = new ThreadSafeSortedList<int, string>();
+            TestPassedConcurrentAddAs(cSortedList);
+        }
 
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentAddCastAsIDictionary()
+        {
+            IDictionary<int, string> cSortedList = new ThreadSafeSortedList<int, string>();
+            TestPassedConcurrentAddAs(cSortedList);
+        }
+
+        private void TestPassedConcurrentAddAs<T>(T cSortedList) where T : IDictionary<int, string>
+        {
             Thread t = new Thread(
                 () =>
                 {
@@ -31,6 +44,7 @@ namespace Concurrency.Chess
 
             cSortedList.Add(2, "value2");
             t.Join();
+            NUnit.Framework.Assert.AreEqual(2, cSortedList.Count);
         }
 
         [Test]
@@ -49,6 +63,7 @@ namespace Concurrency.Chess
 
             cSortedList.Add(12306, "train");
             t.Join();
+            NUnit.Framework.Assert.AreEqual(5, cSortedList.Count);
         }
 
         [Test]
@@ -57,7 +72,20 @@ namespace Concurrency.Chess
         public void TestPassedConcurrentAddAndGetByKey()
         {
             var cSortedList = new ThreadSafeSortedList<int, string>(new Dictionary<int, string> { { 1, "task1" }, { 10, "task10" }, { 20, "task20" } });
+            TestPassedConcurrentAddAndGetByKeyAs(cSortedList);
+        }
 
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentAddAndGetByKeyCastAsIDictionary()
+        {
+            var cSortedList = new ThreadSafeSortedList<int, string>(new Dictionary<int, string> { { 1, "task1" }, { 10, "task10" }, { 20, "task20" } });
+            TestPassedConcurrentAddAndGetByKeyAs(cSortedList);
+        }
+
+        private void TestPassedConcurrentAddAndGetByKeyAs<T>(T cSortedList) where T : IDictionary<int, string>
+        {
             Thread t = new Thread(
                 () =>
                 {
@@ -67,6 +95,8 @@ namespace Concurrency.Chess
 
             var value = cSortedList[10];
             t.Join();
+            NUnit.Framework.Assert.AreEqual(4, cSortedList.Count);
+            NUnit.Framework.Assert.AreEqual("task10", value);
         }
 
         [Test]
@@ -74,8 +104,21 @@ namespace Concurrency.Chess
         [RegressionTestExpectedResult(TestResultType.Passed)]
         public void TestPassedConcurrentAddAndSetByKey()
         {
-            var cSortedList = new ThreadSafeSortedList<int, string>(new Dictionary<int, string> { { 1, "task1" }, { 10, "task10" }, { 20, "task20" } });
+            ThreadSafeSortedList<int, string> cSortedList = new ThreadSafeSortedList<int, string>(new Dictionary<int, string> { { 1, "task1" }, { 10, "task10" }, { 20, "task20" } });
+            TestPassedConcurrentAddAndSetByKeyAs(cSortedList);
+        }
 
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentAddAndSetByKeyCastAsIDictionary()
+        {
+            IDictionary<int, string> cSortedList = new ThreadSafeSortedList<int, string>(new Dictionary<int, string> { { 1, "task1" }, { 10, "task10" }, { 20, "task20" } });
+            TestPassedConcurrentAddAndSetByKeyAs(cSortedList);
+        }
+
+        private void TestPassedConcurrentAddAndSetByKeyAs<T>(T cSortedList) where T : IDictionary<int, string>
+        {
             Thread t = new Thread(
                 () =>
                 {
@@ -85,6 +128,7 @@ namespace Concurrency.Chess
 
             cSortedList[12306] = "train";
             t.Join();
+            NUnit.Framework.Assert.AreEqual(5, cSortedList.Count);
         }
 
         //[Test]
@@ -102,7 +146,6 @@ namespace Concurrency.Chess
         //    t.Start();
 
         //    var values = cSortedList.Values;
-        //    var v = values[0];
         //    t.Join();
         //}
 
