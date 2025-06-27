@@ -13,9 +13,9 @@ namespace Concurrency
         private List<T> _list;
         private object _root;
 
-        public ThreadSafeList(List<T> list)
+        public ThreadSafeList(IList<T> list)
         {
-            _list = list;
+            _list = new List<T>(list);
             _root = ((ICollection)list).SyncRoot;
         }
 

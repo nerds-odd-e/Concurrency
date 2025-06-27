@@ -9,9 +9,27 @@ namespace Concurrency.Chess
         private readonly SortedList<TKey, TValue> _sortedList;
         private readonly object _root = null;
 
-        public ICollection<TKey> Keys => ((IDictionary<TKey, TValue>)_sortedList).Keys;
+        public ICollection<TKey> Keys
+        {
+            get
+            {
+                lock (_root)
+                {
+                    return new ThreadSafeList<TKey>(_sortedList.Keys);
+                }
+            }
+        }
 
-        public ICollection<TValue> Values => ((IDictionary<TKey, TValue>)_sortedList).Values;
+        public ICollection<TValue> Values
+        {
+            get
+            {
+                lock (_root)
+                {
+                    return new ThreadSafeList<TValue>(_sortedList.Values);
+                }
+            }
+        }
 
         public int Count => ((ICollection<KeyValuePair<TKey, TValue>>)_sortedList).Count;
 

@@ -12,6 +12,7 @@ namespace Concurrency.Chess
 {
     [TestFixture]
     [ChessInstrumentAssembly("System")]
+    [ChessInstrumentAssembly("System.Core")]
     [ChessInstrumentAssembly("nunit.framework", Exclude = true)]
     public class TestThreadSafeSortedList
     {
@@ -131,23 +132,78 @@ namespace Concurrency.Chess
             NUnit.Framework.Assert.AreEqual(5, cSortedList.Count);
         }
 
-        //[Test]
-        //[DataRaceTestMethod]
-        //[RegressionTestExpectedResult(TestResultType.Passed)]
-        //public void TestPassedConcurrentAddAndValues()
-        //{
-        //    var cSortedList = new ThreadSafeSortedList<int, string>(new Dictionary<int, string> { { 1, "task1" }, { 10, "task10" }, { 20, "task20" } });
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentAddAndValues()
+        {
+            ThreadSafeSortedList<int, string> cSortedList = new ThreadSafeSortedList<int, string>(new Dictionary<int, string> { { 1, "task1" }, { 10, "task10" }, { 20, "task20" } });
+            TestPassedConcurrentAddAndValuesAs(cSortedList);
+        }
 
-        //    Thread t = new Thread(
-        //        () =>
-        //        {
-        //            cSortedList.Add(42, "magic");
-        //        });
-        //    t.Start();
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentAddAndValuesCastAsIDictionary()
+        {
+            IDictionary<int, string> cSortedList = new ThreadSafeSortedList<int, string>(new Dictionary<int, string> { { 1, "task1" }, { 10, "task10" }, { 20, "task20" } });
+            TestPassedConcurrentAddAndValuesAs(cSortedList);
+        }
 
-        //    var values = cSortedList.Values;
-        //    t.Join();
-        //}
+        private void TestPassedConcurrentAddAndValuesAs<T>(T cSortedList) where T : IDictionary<int, string>
+        {
+            Thread t = new Thread(
+                () =>
+                {
+                    cSortedList.Add(42, "magic");
+                });
+            t.Start();
 
+            ICollection<string> values = cSortedList.Values;
+            foreach (var value in values)
+            {
+                var v = value;
+            }
+            t.Join();
+            NUnit.Framework.Assert.AreEqual(4, cSortedList.Count);
+            NUnit.Framework.Assert.IsTrue(values.Count == 3 || values.Count == 4);
+        }
+
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentAddAndKeys()
+        {
+            ThreadSafeSortedList<int, string> cSortedList = new ThreadSafeSortedList<int, string>(new Dictionary<int, string> { { 1, "task1" }, { 10, "task10" }, { 20, "task20" } });
+            TestPassedConcurrentAddAndKeysAs(cSortedList);
+        }
+
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentAddAndKeysCastAsIDictionary()
+        {
+            IDictionary<int, string> cSortedList = new ThreadSafeSortedList<int, string>(new Dictionary<int, string> { { 1, "task1" }, { 10, "task10" }, { 20, "task20" } });
+            TestPassedConcurrentAddAndKeysAs(cSortedList);
+        }
+
+        private void TestPassedConcurrentAddAndKeysAs<T>(T cSortedList) where T : IDictionary<int, string>
+        {
+            Thread t = new Thread(
+                () =>
+                {
+                    cSortedList.Add(42, "magic");
+                });
+            t.Start();
+
+            ICollection<int> values = cSortedList.Keys;
+            foreach (var value in values)
+            {
+                var v = value;
+            }
+            t.Join();
+            NUnit.Framework.Assert.AreEqual(4, cSortedList.Count);
+            NUnit.Framework.Assert.IsTrue(values.Count == 3 || values.Count == 4);
+        }
     }
 }
