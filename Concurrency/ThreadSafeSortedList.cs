@@ -57,17 +57,26 @@ namespace Concurrency.Chess
 
         public bool ContainsKey(TKey key)
         {
-            return ((IDictionary<TKey, TValue>)_sortedList).ContainsKey(key);
+            lock (_root)
+            {
+                return _sortedList.ContainsKey(key);
+            }
         }
 
         public bool Remove(TKey key)
         {
-            return ((IDictionary<TKey, TValue>)_sortedList).Remove(key);
+            lock (_root)
+            {
+                return _sortedList.Remove(key);
+            }
         }
 
         public bool TryGetValue(TKey key, out TValue value)
         {
-            return ((IDictionary<TKey, TValue>)_sortedList).TryGetValue(key, out value);
+            lock (_root)
+            {
+                return _sortedList.TryGetValue(key, out value);
+            }
         }
 
         public void Add(KeyValuePair<TKey, TValue> item)

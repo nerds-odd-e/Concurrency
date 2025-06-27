@@ -205,5 +205,105 @@ namespace Concurrency.Chess
             NUnit.Framework.Assert.AreEqual(4, cSortedList.Count);
             NUnit.Framework.Assert.IsTrue(values.Count == 3 || values.Count == 4);
         }
+
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentAddAndContainsKey()
+        {
+            ThreadSafeSortedList<int, string> cSortedList = new ThreadSafeSortedList<int, string>(new Dictionary<int, string> { { 1, "task1" }, { 10, "task10" }, { 20, "task20" } });
+            TestPassedConcurrentAddAndContainsKeyAs(cSortedList);
+        }
+
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentAddAndContainsKeyCastAsIDictionary()
+        {
+            IDictionary<int, string> cSortedList = new ThreadSafeSortedList<int, string>(new Dictionary<int, string> { { 1, "task1" }, { 10, "task10" }, { 20, "task20" } });
+            TestPassedConcurrentAddAndContainsKeyAs(cSortedList);
+        }
+
+        private void TestPassedConcurrentAddAndContainsKeyAs<T>(T cSortedList) where T : IDictionary<int, string>
+        {
+            Thread t = new Thread(
+                () =>
+                {
+                    cSortedList.Add(42, "magic");
+                });
+            t.Start();
+
+            var contains = cSortedList.ContainsKey(10);
+            t.Join();
+            NUnit.Framework.Assert.AreEqual(4, cSortedList.Count);
+            NUnit.Framework.Assert.IsTrue(contains);
+        }
+
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentAddAndRemove()
+        {
+            ThreadSafeSortedList<int, string> cSortedList = new ThreadSafeSortedList<int, string>(new Dictionary<int, string> { { 1, "task1" }, { 10, "task10" }, { 20, "task20" } });
+            TestPassedConcurrentAddAndRemoveAs(cSortedList);
+        }
+
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentAddAndRemoveCastAsIDictionary()
+        {
+            IDictionary<int, string> cSortedList = new ThreadSafeSortedList<int, string>(new Dictionary<int, string> { { 1, "task1" }, { 10, "task10" }, { 20, "task20" } });
+            TestPassedConcurrentAddAndRemoveAs(cSortedList);
+        }
+
+        private void TestPassedConcurrentAddAndRemoveAs<T>(T cSortedList) where T : IDictionary<int, string>
+        {
+            Thread t = new Thread(
+                () =>
+                {
+                    cSortedList.Add(42, "magic");
+                });
+            t.Start();
+
+            var removed = cSortedList.Remove(10);
+            t.Join();
+            NUnit.Framework.Assert.AreEqual(3, cSortedList.Count);
+            NUnit.Framework.Assert.IsTrue(removed);
+        }
+
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentAddAndTryGetValue()
+        {
+            ThreadSafeSortedList<int, string> cSortedList = new ThreadSafeSortedList<int, string>(new Dictionary<int, string> { { 1, "task1" }, { 10, "task10" }, { 20, "task20" } });
+            TestPassedConcurrentAddAndTryGetValueAs(cSortedList);
+        }
+
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentAddAndTryGetValueCastAsIDictionary()
+        {
+            IDictionary<int, string> cSortedList = new ThreadSafeSortedList<int, string>(new Dictionary<int, string> { { 1, "task1" }, { 10, "task10" }, { 20, "task20" } });
+            TestPassedConcurrentAddAndTryGetValueAs(cSortedList);
+        }
+
+        private void TestPassedConcurrentAddAndTryGetValueAs<T>(T cSortedList) where T : IDictionary<int, string>
+        {
+            Thread t = new Thread(
+                () =>
+                {
+                    cSortedList.Add(42, "magic");
+                });
+            t.Start();
+
+            cSortedList.TryGetValue(10, out string value);
+            t.Join();
+            NUnit.Framework.Assert.AreEqual(4, cSortedList.Count);
+            NUnit.Framework.Assert.AreEqual("task10", value);
+        }
+
     }
 }
