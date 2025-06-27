@@ -543,5 +543,64 @@ namespace Concurrency.Chess
             NUnit.Framework.Assert.IsTrue(removed);
         }
 
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentAddAndEnumerator()
+        {
+            ThreadSafeSortedList<int, string> cSortedList = new ThreadSafeSortedList<int, string>(new Dictionary<int, string> { { 1, "task1" }, { 10, "task10" }, { 20, "task20" } });
+            TestPassedConcurrentAddAndEnumeratorAs(cSortedList);
+        }
+
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentAddAndEnumeratorCastAsIDictionary()
+        {
+            IDictionary<int, string> cSortedList = new ThreadSafeSortedList<int, string>(new Dictionary<int, string> { { 1, "task1" }, { 10, "task10" }, { 20, "task20" } });
+            TestPassedConcurrentAddAndEnumeratorAs(cSortedList);
+        }
+
+        private void TestPassedConcurrentAddAndEnumeratorAs<T>(T cSortedList) where T : IDictionary<int, string>
+        {
+            Thread t = new Thread(
+                () =>
+                {
+                    cSortedList.Add(42, "magic");
+                });
+            t.Start();
+
+            foreach (var keyValue in cSortedList)
+            {
+                var key = keyValue.Key;
+                var value = keyValue.Value;
+            }
+            t.Join();
+            NUnit.Framework.Assert.AreEqual(4, cSortedList.Count);
+        }
+
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentEnumerateReadViaIEnumerableAndAdd()
+        {
+            ThreadSafeSortedList<int, string> cSortedList = new ThreadSafeSortedList<int, string>(new Dictionary<int, string> { { 1, "task1" }, { 10, "task10" }, { 20, "task20" } });
+
+            Thread t = new Thread(
+                () =>
+                {
+                    System.Collections.IEnumerator enumerater = ((System.Collections.IEnumerable)cSortedList).GetEnumerator();
+                    while (enumerater.MoveNext())
+                    {
+                        int key = ((KeyValuePair<int, string>)enumerater.Current).Key;
+                        string value = ((KeyValuePair<int, string>)enumerater.Current).Value;
+                    }
+                });
+            t.Start();
+
+            cSortedList.Add(42, "magic");
+            t.Join();
+            NUnit.Framework.Assert.AreEqual(4, cSortedList.Count);
+        }
     }
 }

@@ -130,12 +130,16 @@ namespace Concurrency.Chess
 
         public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
         {
-            return ((IEnumerable<KeyValuePair<TKey, TValue>>)_sortedList).GetEnumerator();
+            lock (_root)
+            {
+                var copy = new SortedList<TKey, TValue>(_sortedList);
+                return copy.GetEnumerator();
+            }
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return ((IEnumerable)_sortedList).GetEnumerator();
+            return GetEnumerator();
         }
 
         public TValue this[TKey key]
