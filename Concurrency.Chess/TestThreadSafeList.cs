@@ -77,15 +77,6 @@ namespace Concurrency.Chess
             NUnit.Framework.Assert.AreEqual(5, cList.Count);
         }
 
-        //[Test]
-        //[DataRaceTestMethod]
-        //[RegressionTestExpectedResult(TestResultType.Passed)]
-        //public void TestPassedConcurrentEnumerateReadViaIEnumerableAndUpdateCastAsIList()
-        //{
-        //    IList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
-        //    TestPassedConcurrentEnumerateReadViaIEnumerableAndUpdateAs(cList);
-        //}
-
         private void TestPassedConcurrentEnumerateReadViaIEnumerableAndUpdateAs<T>(T cList) where T : IList<int>
         {
             var listNode = cList[2];

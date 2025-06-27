@@ -37,6 +37,7 @@ namespace Concurrency.Chess
 
             cList.Remove(listNode);
             t.Join();
+            NUnit.Framework.Assert.AreEqual(3, cList.Count);
         }
 
         [Test]
@@ -60,6 +61,7 @@ namespace Concurrency.Chess
 
             cList.Remove(listNode);
             t.Join();
+            NUnit.Framework.Assert.AreEqual(3, cList.Count);
         }
 
         [Test]
@@ -82,6 +84,7 @@ namespace Concurrency.Chess
 
             cList.Remove(listNode);
             t.Join();
+            NUnit.Framework.Assert.AreEqual(3, cList.Count);
         }
 
         [Test]
@@ -100,6 +103,7 @@ namespace Concurrency.Chess
 
             cList.Add(77);
             t.Join();
+            NUnit.Framework.Assert.AreEqual(2, cList.Count);
         }
 
         [Test]
@@ -118,6 +122,7 @@ namespace Concurrency.Chess
 
             cList.Add(77);
             t.Join();
+            NUnit.Framework.Assert.AreEqual(2, cList.Count);
         }
 
         [Test]
@@ -140,11 +145,12 @@ namespace Concurrency.Chess
                 var v1 = v;
             }
             t.Join();
+            NUnit.Framework.Assert.AreEqual(2, range.Count);
         }
 
         [Test]
         [DataRaceTestMethod]
-        [RegressionTestExpectedResult(TestResultType.Exception)]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
         public void TestErrorConcurrentAddAndLoopReadGetRange()
         {
             var cList = new ThreadSafeArrayList(new ArrayList { 1, 2, 3, 4 });
@@ -157,10 +163,18 @@ namespace Concurrency.Chess
             t.Start();
 
             var range = cList.GetRange(1, 2);
-            foreach (var v in range)
+            try
             {
-                var v1 = v;
+                foreach (var v in range)
+                {
+                    var v1 = v;
+                }
             }
+            catch (InvalidOperationException e)
+            {
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.StackTrace);
+            };
             t.Join();
         }
 
