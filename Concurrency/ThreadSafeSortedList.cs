@@ -9,7 +9,7 @@ namespace Concurrency.Chess
         private readonly SortedList<TKey, TValue> _sortedList;
         private readonly object _root = null;
 
-        public ICollection<TKey> Keys
+        public IList<TKey> Keys
         {
             get
             {
@@ -20,7 +20,15 @@ namespace Concurrency.Chess
             }
         }
 
-        public ICollection<TValue> Values
+        ICollection<TKey> IDictionary<TKey, TValue>.Keys
+        {
+            get
+            {
+                return Keys;
+            }
+        }
+
+        public IList<TValue> Values
         {
             get
             {
@@ -43,6 +51,14 @@ namespace Concurrency.Chess
         }
 
         public bool IsReadOnly => ((ICollection<KeyValuePair<TKey, TValue>>)_sortedList).IsReadOnly;
+
+        ICollection<TValue> IDictionary<TKey, TValue>.Values
+        {
+            get
+            {
+                return Values;
+            }
+        }
 
         public ThreadSafeSortedList()
         {
@@ -184,5 +200,30 @@ namespace Concurrency.Chess
             }
         }
 
+        public int Capacity
+        {
+            get
+            {
+                lock (_root)
+                {
+                    return _sortedList.Capacity;
+                }
+            }
+            set
+            {
+                lock (_root)
+                {
+                    _sortedList.Capacity = value;
+                }
+            }
+        }
+
+        public IComparer<TKey> Comparer
+        {
+            get
+            {
+                return _sortedList.Comparer;
+            }
+        }
     }
 }

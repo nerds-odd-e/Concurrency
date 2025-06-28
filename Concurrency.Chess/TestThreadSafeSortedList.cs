@@ -13,6 +13,7 @@ namespace Concurrency.Chess
     [TestFixture]
     [ChessInstrumentAssembly("System")]
     [ChessInstrumentAssembly("System.Core")]
+    [ChessInstrumentAssembly("mscorlib")]
     [ChessInstrumentAssembly("nunit.framework", Exclude = true)]
     public class TestThreadSafeSortedList
     {
@@ -678,6 +679,88 @@ namespace Concurrency.Chess
             cSortedList.Add(123, "train");
             t.Join();
             NUnit.Framework.Assert.AreEqual(5, cSortedList.Count);
+        }
+
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentAddAndValuesReturnsIList()
+        {
+            ThreadSafeSortedList<int, string> cSortedList = new ThreadSafeSortedList<int, string>(new Dictionary<int, string> { { 1, "task1" }, { 10, "task10" }, { 20, "task20" } });
+
+            Thread t = new Thread(
+                () =>
+                {
+                    cSortedList.Add(42, "magic");
+                });
+            t.Start();
+
+            IList<string> values = cSortedList.Values;
+            var value = values[2];
+            t.Join();
+            NUnit.Framework.Assert.AreEqual(4, cSortedList.Count);
+            NUnit.Framework.Assert.AreEqual("task20", value);
+        }
+
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentAddAndKeysReturnsIList()
+        {
+            ThreadSafeSortedList<int, string> cSortedList = new ThreadSafeSortedList<int, string>(new Dictionary<int, string> { { 1, "task1" }, { 10, "task10" }, { 20, "task20" } });
+
+            Thread t = new Thread(
+                () =>
+                {
+                    cSortedList.Add(42, "magic");
+                });
+            t.Start();
+
+            IList<int> keys = cSortedList.Keys;
+            var key = keys[1];
+            t.Join();
+            NUnit.Framework.Assert.AreEqual(4, cSortedList.Count);
+            NUnit.Framework.Assert.AreEqual(10, key);
+        }
+
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentCapacityReadAndUpdate()
+        {
+            ThreadSafeSortedList<int, string> cSortedList = new ThreadSafeSortedList<int, string>(new Dictionary<int, string> { { 1, "task1" }, { 10, "task10" }, { 20, "task20" } });
+
+            Thread t = new Thread(
+                () =>
+                {
+                    var c = cSortedList.Capacity;
+                });
+            t.Start();
+
+            cSortedList.Capacity = 10;
+            t.Join();
+            NUnit.Framework.Assert.AreEqual(10, cSortedList.Capacity);
+            NUnit.Framework.Assert.AreEqual(3, cSortedList.Count);
+        }
+
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentAddAndGetComparer()
+        {
+            ThreadSafeSortedList<int, string> cSortedList = new ThreadSafeSortedList<int, string>(Comparer<int>.Default);
+
+            Thread t = new Thread(
+                () =>
+                {
+                    cSortedList.Add(1, "value1");
+                });
+            t.Start();
+
+            var comparer = cSortedList.Comparer;
+            t.Join();
+            NUnit.Framework.Assert.AreEqual(1, cSortedList.Count);
+            NUnit.Framework.Assert.AreEqual(Comparer<int>.Default, comparer);
         }
 
     }
