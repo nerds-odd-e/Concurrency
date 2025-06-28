@@ -602,5 +602,83 @@ namespace Concurrency.Chess
             t.Join();
             NUnit.Framework.Assert.AreEqual(4, cSortedList.Count);
         }
+
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConstructorWithCapacity()
+        {
+            ThreadSafeSortedList<int, string> cSortedList = new ThreadSafeSortedList<int, string>(42);
+
+            Thread t = new Thread(
+                () =>
+                {
+                    cSortedList.Add(1, "value1");
+                });
+            t.Start();
+
+            cSortedList.Add(2, "value2");
+            t.Join();
+            NUnit.Framework.Assert.AreEqual(2, cSortedList.Count);
+        }
+
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConstructorWithComparer()
+        {
+            ThreadSafeSortedList<int, string> cSortedList = new ThreadSafeSortedList<int, string>(Comparer<int>.Default);
+
+            Thread t = new Thread(
+                () =>
+                {
+                    cSortedList.Add(1, "value1");
+                });
+            t.Start();
+
+            cSortedList.Add(2, "value2");
+            t.Join();
+            NUnit.Framework.Assert.AreEqual(2, cSortedList.Count);
+        }
+
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConstructorWithCapacityAndComparer()
+        {
+            ThreadSafeSortedList<int, string> cSortedList = new ThreadSafeSortedList<int, string>(42, Comparer<int>.Default);
+
+            Thread t = new Thread(
+                () =>
+                {
+                    cSortedList.Add(1, "value1");
+                });
+            t.Start();
+
+            cSortedList.Add(2, "value2");
+            t.Join();
+            NUnit.Framework.Assert.AreEqual(2, cSortedList.Count);
+        }
+
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConstructorWithIDictionaryAndComparer()
+        {
+            ThreadSafeSortedList<int, string> cSortedList = new ThreadSafeSortedList<int, string>(
+                new Dictionary<int, string> { { 1, "task1" }, { 10, "task10" }, { 20, "task20" } }, Comparer<int>.Default);
+
+            Thread t = new Thread(
+                () =>
+                {
+                    cSortedList.Add(42, "magic");
+                });
+            t.Start();
+
+            cSortedList.Add(123, "train");
+            t.Join();
+            NUnit.Framework.Assert.AreEqual(5, cSortedList.Count);
+        }
+
     }
 }

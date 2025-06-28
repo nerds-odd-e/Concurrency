@@ -50,6 +50,30 @@ namespace Concurrency.Chess
             System.Threading.Interlocked.CompareExchange(ref _root, new object(), null);
         }
 
+        public ThreadSafeSortedList(int capacity)
+        {
+            _sortedList = new SortedList<TKey, TValue>(capacity);
+            System.Threading.Interlocked.CompareExchange(ref _root, new object(), null);
+        }
+
+        public ThreadSafeSortedList(IComparer<TKey> comparer)
+        {
+            _sortedList = new SortedList<TKey, TValue>(comparer);
+            System.Threading.Interlocked.CompareExchange(ref _root, new object(), null);
+        }
+
+        public ThreadSafeSortedList(int capacity, IComparer<TKey> comparer)
+        {
+            _sortedList = new SortedList<TKey, TValue>(capacity, comparer);
+            System.Threading.Interlocked.CompareExchange(ref _root, new object(), null);
+        }
+
+        public ThreadSafeSortedList(IDictionary<TKey, TValue> dictionary, IComparer<TKey> comparer)
+        {
+            _sortedList = new SortedList<TKey, TValue>(dictionary, comparer);
+            System.Threading.Interlocked.CompareExchange(ref _root, new object(), null);
+        }
+
         public ThreadSafeSortedList(IDictionary<TKey, TValue> dictionary)
         {
             _sortedList = new SortedList<TKey, TValue>(dictionary);
