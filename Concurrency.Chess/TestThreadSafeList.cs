@@ -155,7 +155,16 @@ namespace Concurrency.Chess
             TestPassedConcurrentAddAndIsReadOnlyAs(cList);
         }
 
-        private void TestPassedConcurrentAddAndIsReadOnlyAs<T>(T cList) where T : IList<int>
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentAddAndIsReadOnlyCastAsICollection()
+        {
+            ICollection<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            TestPassedConcurrentAddAndIsReadOnlyAs(cList);
+        }
+
+        private void TestPassedConcurrentAddAndIsReadOnlyAs<T>(T cList) where T : ICollection<int>
         {
             Thread t = new Thread(
                 () =>
@@ -188,7 +197,16 @@ namespace Concurrency.Chess
             TestPassedConcurrentAddAndCountAs(cList);
         }
 
-        private void TestPassedConcurrentAddAndCountAs<T>(T cList) where T : IList<int>
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentAddAndCountCastAsICollection()
+        {
+            ICollection<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            TestPassedConcurrentAddAndCountAs(cList);
+        }
+
+        private void TestPassedConcurrentAddAndCountAs<T>(T cList) where T : ICollection<int>
         {
             Thread t = new Thread(
                 () =>
@@ -286,11 +304,20 @@ namespace Concurrency.Chess
         [RegressionTestExpectedResult(TestResultType.Passed)]
         public void TestPassedConcurrentAddAndClearCastAsIList()
         {
-            ThreadSafeList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            IList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
             TestPassedConcurrentAddAndClearAs(cList);
         }
 
-        private void TestPassedConcurrentAddAndClearAs<T>(T cList) where T : IList<int>
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentAddAndClearCastAsICollection()
+        {
+            ICollection<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            TestPassedConcurrentAddAndClearAs(cList);
+        }
+
+        private void TestPassedConcurrentAddAndClearAs<T>(T cList) where T : ICollection<int>
         {
             Thread t = new Thread(
                 () =>
@@ -318,11 +345,20 @@ namespace Concurrency.Chess
         [RegressionTestExpectedResult(TestResultType.Passed)]
         public void TestPassedConcurrentAddAndContainsCastAsIList()
         {
-            ThreadSafeList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            IList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
             TestPassedConcurrentAddAndContainsAs(cList);
         }
 
-        private void TestPassedConcurrentAddAndContainsAs<T>(T cList) where T : IList<int>
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentAddAndContainsCastAsICollection()
+        {
+            ICollection<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            TestPassedConcurrentAddAndContainsAs(cList);
+        }
+
+        private void TestPassedConcurrentAddAndContainsAs<T>(T cList) where T : ICollection<int>
         {
             Thread t = new Thread(
                 () =>
@@ -429,7 +465,16 @@ namespace Concurrency.Chess
             TestPassedConcurrentAddAndRemoveAs(cList);
         }
 
-        private void TestPassedConcurrentAddAndRemoveAs<T>(T cList) where T : IList<int>
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentAddAndRemoveCastAsICollection()
+        {
+            ICollection<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            TestPassedConcurrentAddAndRemoveAs(cList);
+        }
+
+        private void TestPassedConcurrentAddAndRemoveAs<T>(T cList) where T : ICollection<int>
         {
             Thread t = new Thread(
                 () =>
@@ -1314,7 +1359,25 @@ namespace Concurrency.Chess
             TestPassedConcurrentAddAndCopyToWithArrayIndexAs(cList);
         }
 
-        private void TestPassedConcurrentAddAndCopyToWithArrayIndexAs<T>(T cList) where T : IList<int>
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentAddAndCopyToWithArrayIndexCastAsIList()
+        {
+            IList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            TestPassedConcurrentAddAndCopyToWithArrayIndexAs(cList);
+        }
+
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedConcurrentAddAndCopyToWithArrayIndexCastAsICollection()
+        {
+            ICollection<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+            TestPassedConcurrentAddAndCopyToWithArrayIndexAs(cList);
+        }
+
+        private void TestPassedConcurrentAddAndCopyToWithArrayIndexAs<T>(T cList) where T : ICollection<int>
         {
             Thread t = new Thread(
                 () =>
@@ -1328,15 +1391,6 @@ namespace Concurrency.Chess
             t.Join();
             NUnit.Framework.Assert.AreEqual(5, cList.Count);
             NUnit.Framework.Assert.AreEqual(1, result[3]);
-        }
-
-        [Test]
-        [DataRaceTestMethod]
-        [RegressionTestExpectedResult(TestResultType.Passed)]
-        public void TestPassedConcurrentAddAndCopyToWithArrayIndexCastAsIList()
-        {
-            IList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
-            TestPassedConcurrentAddAndCopyToWithArrayIndexAs(cList);
         }
 
         [Test]
