@@ -1475,5 +1475,25 @@ namespace Concurrency.Chess
             NUnit.Framework.Assert.IsTrue(a == null || a.Length == 4 || a.Length == 5);
         }
 
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedSyncRoot()
+        {
+            ThreadSafeList<int> cList = new ThreadSafeList<int>();
+
+            Thread t = new Thread(
+                () =>
+                {
+                    cList.Add(42);
+                });
+            t.Start();
+
+            var syncRoot = cList.SyncRoot;
+            t.Join();
+            NUnit.Framework.Assert.AreEqual(1, cList.Count);
+            NUnit.Framework.Assert.IsNotNull(syncRoot);
+        }
+
     }
 }

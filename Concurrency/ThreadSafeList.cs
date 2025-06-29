@@ -450,5 +450,10 @@ namespace Concurrency
             return GetEnumerator();
         }
 
+        public object SyncRoot
+        {
+            get { return _root; }
+        }
+
     }
 }
