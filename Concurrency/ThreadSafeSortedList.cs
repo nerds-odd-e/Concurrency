@@ -112,11 +112,43 @@ namespace Concurrency.Chess
             }
         }
 
+        public int IndexOfKey(TKey key)
+        {
+            lock (_root)
+            {
+                return _sortedList.IndexOfKey(key);
+            }
+        }
+
+        public bool ContainsValue(TValue value)
+        {
+            lock (_root)
+            {
+                return _sortedList.ContainsValue(value);
+            }
+        }
+
+        public int IndexOfValue(TValue value)
+        {
+            lock (_root)
+            {
+                return _sortedList.IndexOfValue(value);
+            }
+        }
+
         public bool Remove(TKey key)
         {
             lock (_root)
             {
                 return _sortedList.Remove(key);
+            }
+        }
+
+        public void RemoveAt(int index)
+        {
+            lock (_root)
+            {
+                _sortedList.RemoveAt(index);
             }
         }
 
@@ -223,6 +255,14 @@ namespace Concurrency.Chess
             get
             {
                 return _sortedList.Comparer;
+            }
+        }
+
+        public void TrimExcess()
+        {
+            lock (_root)
+            {
+                _sortedList.TrimExcess();
             }
         }
     }
