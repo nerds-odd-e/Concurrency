@@ -429,11 +429,11 @@ namespace Concurrency
             }
         }
 
-        public List<T> GetRange(int index, int count)
+        public ThreadSafeList<T> GetRange(int index, int count)
         {
             lock (_root)
             {
-                return _list.GetRange(index, count);
+                return new ThreadSafeList<T>(_list.GetRange(index, count));
             }
         }
 

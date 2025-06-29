@@ -1374,9 +1374,31 @@ namespace Concurrency.Chess
                 });
             t.Start();
 
-            cList.GetRange(1, 2);
+            var getRange = cList.GetRange(1, 2);
             t.Join();
             NUnit.Framework.Assert.AreEqual(5, cList.Count);
+            NUnit.Framework.Assert.AreEqual(2, getRange.Count);
+        }
+
+        [Test]
+        [DataRaceTestMethod]
+        [RegressionTestExpectedResult(TestResultType.Passed)]
+        public void TestPassedThreadSafeOfListReturnedByGetRange()
+        {
+            ThreadSafeList<int> cList = new ThreadSafeList<int>(new List<int> { 1, 2, 3, 4 });
+
+            var found = cList.GetRange(1, 2);
+
+            Thread t = new Thread(
+                () =>
+                {
+                    found.Add(12306);
+                });
+            t.Start();
+
+            found.Add(777);
+            t.Join();
+            NUnit.Framework.Assert.AreEqual(4, found.Count);
         }
 
         [Test]
