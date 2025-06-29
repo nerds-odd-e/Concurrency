@@ -16,7 +16,7 @@ namespace Concurrency
         public ThreadSafeList(IList<T> list)
         {
             _list = new List<T>(list);
-            _root = ((ICollection)list).SyncRoot;
+            _root = ((ICollection)_list).SyncRoot;
         }
 
         public int Count
@@ -449,5 +449,6 @@ namespace Concurrency
         {
             return GetEnumerator();
         }
+
     }
 }
