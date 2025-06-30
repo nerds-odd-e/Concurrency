@@ -6,13 +6,13 @@ namespace Concurrency
 {
     public class ThreadSafeArrayList : ArrayList
     {
-        private ArrayList _list;
-        private object _root;
+        private readonly ArrayList _list;
+        private readonly object _root;
 
         public ThreadSafeArrayList(ArrayList list)
         {
-            _list = list;
-            _root = list.SyncRoot;
+            _list = new ArrayList(list);
+            _root = _list.SyncRoot;
         }
 
         public override int Capacity
@@ -291,10 +291,6 @@ namespace Concurrency
         {
             lock (_root)
             {
-                /* 
-                    Please note that even through we can return a thread-safe array list, we can't avoid the exception that thrown by underline array list 
-                    when concurrently modify the base array list and read from the returned array list. Internally, array list has a mechanism to throw such exception
-                 */
                 return new ThreadSafeArrayList(_list.GetRange(index, count));
             }
         }

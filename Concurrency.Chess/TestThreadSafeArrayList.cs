@@ -132,10 +132,11 @@ namespace Concurrency.Chess
         {
             var cList = new ThreadSafeArrayList(new ArrayList { 1, 2, 3, 4 });
 
+            object value = null;
             Thread t = new Thread(
                 () =>
                 {
-                    var value = cList[3];
+                    value = cList[3];
                 });
             t.Start();
 
@@ -146,6 +147,7 @@ namespace Concurrency.Chess
             }
             t.Join();
             NUnit.Framework.Assert.AreEqual(2, range.Count);
+            NUnit.Framework.Assert.AreEqual(4, value);
         }
 
         [Test]
@@ -163,19 +165,12 @@ namespace Concurrency.Chess
             t.Start();
 
             var range = cList.GetRange(1, 2);
-            try
+            foreach (var v in range)
             {
-                foreach (var v in range)
-                {
-                    var v1 = v;
-                }
+                var v1 = v;
             }
-            catch (InvalidOperationException e)
-            {
-                Console.WriteLine(e.Message);
-                Console.WriteLine(e.StackTrace);
-            };
             t.Join();
+            NUnit.Framework.Assert.AreEqual(2, range.Count);
         }
 
     }
