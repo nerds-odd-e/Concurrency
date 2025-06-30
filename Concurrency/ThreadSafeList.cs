@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 
 namespace Concurrency
 {
-    public class ThreadSafeList<T> : IList<T>
+    public class ThreadSafeList<T> : IList<T>, IReadOnlyList<T>
     {
-        private List<T> _list;
-        private object _root;
+        private readonly List<T> _list;
+        private readonly object _root;
 
         public ThreadSafeList(IEnumerable<T> list)
         {
