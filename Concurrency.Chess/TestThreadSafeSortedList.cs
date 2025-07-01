@@ -73,7 +73,7 @@ namespace Concurrency.Chess
         [RegressionTestExpectedResult(TestResultType.Passed)]
         public void TestPassedConcurrentAddAndGetByKey()
         {
-            var cSortedList = new ThreadSafeSortedList<int, string>(new Dictionary<int, string> { { 1, "task1" }, { 10, "task10" }, { 20, "task20" } });
+            ThreadSafeSortedList<int, string> cSortedList = new ThreadSafeSortedList<int, string>(new Dictionary<int, string> { { 1, "task1" }, { 10, "task10" }, { 20, "task20" } });
             TestPassedConcurrentAddAndGetByKeyAs(cSortedList);
         }
 
@@ -82,7 +82,7 @@ namespace Concurrency.Chess
         [RegressionTestExpectedResult(TestResultType.Passed)]
         public void TestPassedConcurrentAddAndGetByKeyCastAsIDictionary()
         {
-            var cSortedList = new ThreadSafeSortedList<int, string>(new Dictionary<int, string> { { 1, "task1" }, { 10, "task10" }, { 20, "task20" } });
+            IDictionary<int, string> cSortedList = new ThreadSafeSortedList<int, string>(new Dictionary<int, string> { { 1, "task1" }, { 10, "task10" }, { 20, "task20" } });
             TestPassedConcurrentAddAndGetByKeyAs(cSortedList);
         }
 
